@@ -1,6 +1,6 @@
 # Ansible Role : EyesOfNetwork
 
-Deploy last EyesOfNetwork version on a CentOS 7.4 host.
+Ansible Role for EyesOfNetwork.
 
 Requirements
 ------------
