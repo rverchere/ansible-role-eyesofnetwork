@@ -1,0 +1,5 @@
+---
+# vars file for ansible-role-eyesofnetwork
+
+version: 5
+release: 2
