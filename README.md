@@ -16,14 +16,18 @@ Role Variables
 Example Playbook
 ----------------
 
-      - hosts: eyesofnetwork
-        tasks:
-        - include_role:
-          name:eyesofnetwork
-          tasks_from: install
-          vars:
-            version: 5
-            release: 2
+```
+- name: Install EyesOfNetwork Monitoring 
+  hosts: eyesofnetwork
+  remote_user: root
+  tasks:
+  - import_role:
+      name: eyesofnetwork
+      tasks_from: install
+    vars:
+      version: 5
+      release: 2
+```
 
 Author Information
 ------------------
