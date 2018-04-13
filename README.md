@@ -32,4 +32,4 @@ Example Playbook
 Author Information
 ------------------
 
-* **Jean-Philippe Levy** - *Initial work* - [EyesOfNetwork Community](https://github.com/eyesofnetworkcommunity)
+* **Jean-Philippe Levy** - <jean-philippe.levy@axians.com> - [EyesOfNetwork Community](https://github.com/eyesofnetworkcommunity)
