@@ -1,0 +1,23 @@
+---
+# tasks file for install
+
+- name: disable selinux
+  selinux:
+    state: disabled
+
+- name: install the 'eyesofnetwork-release' package
+  yum:
+    name: https://download.eyesofnetwork.com/repos/{{version}}/base/eyesofnetwork-release-{{version}}-{{release}}.noarch.rpm
+    state: present
+
+- name: install the 'EyesOfNetwork Monitoring' package group
+  yum:
+    name: "@^EyesOfNetwork Monitoring"
+    state: present
+    enablerepo: eon-base
+    update_cache: yes
+
+- name: start eyesofnetwork initialization
+  service:
+    name: eonconf
+    state: started
