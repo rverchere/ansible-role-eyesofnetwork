@@ -3,3 +3,7 @@
 
 version: 5
 release: 2
+
+api_url: https://192.168.46.128/eonapi
+api_user: admin
+api_token: ab9e13618bcdb7031709ff214f79dcfec23c91ffc81e182315464ab075d5aea6
