@@ -5,17 +5,18 @@
   uri:
     url: "{{api_url}}/createHost?username={{api_user}}&apiKey={{api_token}}"
     method: POST
-    return_content: yes
-    validate_certs: no
     headers:
       Content-Type: "application/json"
     body: '{ "hostName" : "{{ hostName }}", "hostIp" : "{{ hostIp }}", "hostAlias" : "{{ hostAlias }}", "templateHostName" : "{{ templateHostName }}" }'
+    body_format: json
+    return_content: yes
+    validate_certs: no
   register: return
 
 - name : display result
   debug:
-    msg: return.content
-
+    msg: "{{ return.content }}"
+    
 - name: Fail if 200 OK is not in the page content
   fail:
   when: "'200 OK' not in return.content"
