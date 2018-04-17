@@ -7,7 +7,8 @@
     method: POST
     return_content: yes
     validate_certs: no
-    HEADER_Content-Type: "application/json"
+    headers:
+      Content-Type: "application/json"
     body: '{ "hostName" : "{{ hostName }}", "hostIp" : "{{ hostIp }}", "hostAlias" : "{{ hostAlias }}", "templateHostName" : "{{ templateHostName }}" }'
   register: return
 
