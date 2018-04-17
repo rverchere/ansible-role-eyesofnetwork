@@ -1,0 +1,22 @@
+---
+# task api_del_host
+
+- name: use eonapi to delete host
+  uri:
+    url: "{{api_url}}/deleteHost?username={{api_user}}&apiKey={{api_token}}"
+    method: POST
+    headers:
+      Content-Type: "application/json"
+    body: '{ "hostName" : "{{ hostName }}" }'
+    body_format: json
+    return_content: yes
+    validate_certs: no
+  register: return
+
+- name : display result
+  debug:
+    msg: "{{ return.content }}"
+    
+- name: Fail if 200 OK is not in the page content
+  fail:
+  when: "'200 OK' not in return.content"
