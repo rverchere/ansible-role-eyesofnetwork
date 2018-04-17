@@ -17,6 +17,6 @@
   debug:
     msg: "{{ return.content }}"
     
-- name: Fail if 200 OK is not in the page content
+- name: Fail if ERROR in the page content
   fail:
-  when: "'200 OK' not in return.content"
+  when: "'ERROR' in return.content"

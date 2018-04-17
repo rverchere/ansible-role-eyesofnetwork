@@ -1,13 +1,13 @@
 ---
-# task api_add_host
+# task api_export
 
-- name: use eonapi to create host
+- name: use eonapi to export configuration
   uri:
-    url: "{{api_url}}/createHost?username={{api_user}}&apiKey={{api_token}}"
+    url: "{{api_url}}/exportConfiguration?username={{api_user}}&apiKey={{api_token}}"
     method: POST
     headers:
       Content-Type: "application/json"
-    body: '{ "hostName" : "{{ hostName }}", "hostIp" : "{{ hostIp }}", "hostAlias" : "{{ hostAlias }}", "templateHostName" : "{{ templateHostName }}" }'
+    body: '{ "jobName" : "{{ jobName }}" }'
     body_format: json
     return_content: yes
     validate_certs: no
