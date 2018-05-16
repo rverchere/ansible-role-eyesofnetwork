@@ -7,8 +7,13 @@
 
 - name: install the 'eyesofnetwork-release' package
   yum:
-    name: https://download.eyesofnetwork.com/repos/{{version}}/base/eyesofnetwork-release-{{version}}-{{release}}.noarch.rpm
+    name: "{{item}}"
     state: present
+  loop:
+    - epel-release
+    - https://download.eyesofnetwork.com/repos/{{version}}/base/eyesofnetwork-release-{{version}}-{{release}}.noarch.rpm
+    - https://labs.consol.de/repo/stable/rhel7/i386/labs-consol-stable.rhel7.noarch.rpm
+    - https://rpm.ocsinventory-ng.org/ocsinventory-release-latest.el7.ocs.noarch.rpm
 
 - name: install the 'EyesOfNetwork Monitoring' package group
   yum:
