@@ -21,7 +21,7 @@
     state: present
     enablerepo: eon-base
     update_cache: yes
-    exclude: php-mysqlnd
+    exclude: php-mysql
 
 - name: start eyesofnetwork initialization
   service:
