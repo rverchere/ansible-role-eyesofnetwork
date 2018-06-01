@@ -18,7 +18,7 @@
 - name: install the 'EyesOfNetwork Monitoring' package group
   yum:
     name: "@^EyesOfNetwork Monitoring"
-    state: present
+    state: latest
     enablerepo: eon-base
     update_cache: yes
     exclude: php-mysql
