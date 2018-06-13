@@ -6,7 +6,7 @@
     state: disabled
   when: "'mod_gearman_worker' in group_names"
 
-- name: install the 'eyesofnetwork-release' package
+- name: install the 'mod_gearman_worker' packages
   yum:
     name: "{{ item }}"
     state: present
@@ -14,6 +14,10 @@
     - epel-release
     - https://download.eyesofnetwork.com/repos/{{version}}/base/eyesofnetwork-release-{{version}}-{{release}}.noarch.rpm
     - https://labs.consol.de/repo/stable/rhel7/i386/labs-consol-stable.rhel7.noarch.rpm
+    - nagios-plugins-all
+    - nagios-plugins-eon
+    - perl-Nagios-Plugin
+    - perl-Net-SNMP
   when: "'mod_gearman_worker' in group_names"
 
 - name: install 'mod_gearman' packages
@@ -32,8 +36,27 @@
     state: stopped
   when: "'mod_gearman_worker' in group_names"
 
+- name: copy module conf to master
+  template:
+    src: mod_gearman/module.conf.j2
+    dest: /etc/mod_gearman/module.conf
+    owner: root
+    group: root
+    mode: 0644
+  when: "'mod_gearman_server' in group_names"
+
+- name: copy worker conf to worker
+  template:
+    src: mod_gearman/worker.conf.j2
+    dest: /etc/mod_gearman/worker.conf
+    owner: root
+    group: root
+    mode: 0644
+  when: "'mod_gearman_worker' in group_names"
+
 - name: enable mod-gearman-worker
   service:
     name: mod-gearman-worker
     enabled: yes
     state: restarted
+
