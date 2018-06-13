@@ -1,0 +1,39 @@
+---
+# task mod_gearman
+
+- name: disable selinux
+  selinux:
+    state: disabled
+  when: "'mod_gearman_worker' in group_names"
+
+- name: install the 'eyesofnetwork-release' package
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - epel-release
+    - https://download.eyesofnetwork.com/repos/{{version}}/base/eyesofnetwork-release-{{version}}-{{release}}.noarch.rpm
+    - https://labs.consol.de/repo/stable/rhel7/i386/labs-consol-stable.rhel7.noarch.rpm
+  when: "'mod_gearman_worker' in group_names"
+
+- name: install 'mod_gearman' packages
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - gearmand
+    - gearmand-server
+    - mod_gearman
+
+- name: disable gearmand-server on worker
+  service:
+    name: gearmand
+    enabled: no
+    state: stopped
+  when: "'mod_gearman_worker' in group_names"
+
+- name: enable mod-gearman-worker
+  service:
+    name: mod-gearman-worker
+    enabled: yes
+    state: restarted

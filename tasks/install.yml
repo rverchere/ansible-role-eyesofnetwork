@@ -23,7 +23,12 @@
     update_cache: yes
     exclude: php-mysql
 
+- name: check if eon repo exists
+  stat: path=/srv/eyesofnetworkrepo
+  register: check_path
+
 - name: start eyesofnetwork initialization
   service:
     name: eonconf
     state: started
+  when: check_path.stat.exists == false
