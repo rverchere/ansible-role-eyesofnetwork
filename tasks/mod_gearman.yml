@@ -60,11 +60,16 @@
     owner: root
     group: root
     mode: 0644
-#  when: "'mod_gearman_worker' in group_names"
+
+- name: enable gearmand on server
+  service:
+    name: gearmand
+    enabled: yes
+    state: restarted
+  when: "'mod_gearman_server' in group_names"
 
 - name: enable mod-gearman-worker
   service:
     name: mod-gearman-worker
     enabled: yes
     state: restarted
-
