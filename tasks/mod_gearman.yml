@@ -36,7 +36,7 @@
     state: stopped
   when: "'mod_gearman_worker' in group_names"
 
-- name: copy secret file to the different node
+- name: copy secret file to each nodes
   template:
     src: mod_gearman/secret.file.j2
     dest: "{{ mod_gearman_key_path }}"
@@ -61,15 +61,33 @@
     group: root
     mode: 0644
 
-- name: enable gearmand on server
+- name: restart mod-gearman-worker on each nodes
+  service:
+    name: mod-gearman-worker
+    enabled: yes
+    state: restarted
+
+- name: stop gearmand on server
+  service:
+    name: gearmand
+    state: stopped
+  when: "'mod_gearman_server' in group_names"
+
+- name: delete retention file on server
+  file:
+    path: /tmp/gearmand.retention
+    state: absent
+  when: "'mod_gearman_server' in group_names"
+
+- name: restart gearmand on server
   service:
     name: gearmand
     enabled: yes
     state: restarted
   when: "'mod_gearman_server' in group_names"
 
-- name: enable mod-gearman-worker
+- name: restart nagios on server
   service:
-    name: mod-gearman-worker
-    enabled: yes
+    name: nagios
     state: restarted
+  when: "'mod_gearman_server' in group_names"
