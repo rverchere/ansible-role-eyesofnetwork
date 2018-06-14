@@ -86,8 +86,23 @@
     state: restarted
   when: "'mod_gearman_server' in group_names"
 
-- name: restart nagios on server
-  service:
-    name: nagios
-    state: restarted
+- name: use eonapi to add broker
+  uri:
+    url: "{{api_url}}/addEventBroker?username={{api_user}}&apiKey={{api_token}}"
+    method: POST
+    headers:
+      Content-Type: "application/json"
+    body: '{ "broker" : "{{ mod_gearman_broker }}", "exportConfiguration": true }'
+    body_format: json
+    return_content: yes
+    validate_certs: no
+  register: return
   when: "'mod_gearman_server' in group_names"
+
+- name : display result
+  debug:
+    msg: "{{ return.content }}"
+
+- name: Fail if ERROR in the page content
+  fail:
+  when: "'ERROR' in return.content"
