@@ -79,13 +79,13 @@ encryption=yes
 # A shared password which will be used for
 # encryption of data pakets. Should be at least 8
 # bytes long. Maximum length is 32 characters.
-key=should_be_changed
+#key=should_be_changed
 
 
 # The shared password will be read from this file.
 # Use either key or keyfile. Only the first 32
 # characters will be used.
-#keyfile=/path/to/secret.file
+keyfile={{mod_gearman_key_path}}
 
 # Path to the pidfile. Usually set by the init script
 #pidfile=/var/mod_gearman/mod_gearman_worker.pid

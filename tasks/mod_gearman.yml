@@ -36,7 +36,15 @@
     state: stopped
   when: "'mod_gearman_worker' in group_names"
 
-- name: copy module conf to master
+- name: copy secret file to the different node
+  template:
+    src: mod_gearman/secret.file.j2
+    dest: "{{ mod_gearman_key_path }}"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: generate template server to server node
   template:
     src: mod_gearman/module.conf.j2
     dest: /etc/mod_gearman/module.conf
@@ -45,14 +53,14 @@
     mode: 0644
   when: "'mod_gearman_server' in group_names"
 
-- name: copy worker conf to worker
+- name: generate template worker to worker node
   template:
     src: mod_gearman/worker.conf.j2
     dest: /etc/mod_gearman/worker.conf
     owner: root
     group: root
     mode: 0644
-  when: "'mod_gearman_worker' in group_names"
+#  when: "'mod_gearman_worker' in group_names"
 
 - name: enable mod-gearman-worker
   service:
