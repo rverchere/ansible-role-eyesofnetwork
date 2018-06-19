@@ -9,7 +9,7 @@
 - name: install the 'mod_gearman_worker' repos
   yum:
     name: "{{ item }}"
-    state: present
+    state: latest
   with_items:
     - epel-release
     - https://download.eyesofnetwork.com/repos/{{version}}/base/eyesofnetwork-release-{{version}}-{{release}}.noarch.rpm
@@ -19,7 +19,7 @@
 - name: install the 'mod_gearman_worker' packages
   yum:
     name: "{{ item }}"
-    state: present
+    state: latest
   with_items:
     - nagios-plugins-all
     - nagios-plugins-eon
@@ -30,7 +30,7 @@
 - name: install 'mod_gearman' packages
   yum:
     name: "{{ item }}"
-    state: present
+    state: latest
   with_items:
     - gearmand
     - gearmand-server

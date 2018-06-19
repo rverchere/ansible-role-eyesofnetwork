@@ -8,7 +8,7 @@
 - name: install the 'eyesofnetwork-release' package
   yum:
     name: "{{ item }}"
-    state: present
+    state: latest
   with_items:
     - epel-release
     - https://download.eyesofnetwork.com/repos/{{version}}/base/eyesofnetwork-release-{{version}}-{{release}}.noarch.rpm
