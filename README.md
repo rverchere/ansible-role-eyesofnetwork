@@ -5,7 +5,7 @@ Ansible Role for EyesOfNetwork.
 Requirements
 ------------
 
-CentOS 7.4 with minimal install.
+CentOS 7 with minimal install.
 
 Role Variables
 --------------
