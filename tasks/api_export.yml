@@ -3,7 +3,7 @@
 
 - name: use eonapi to export configuration
   uri:
-    url: "{{api_url}}/exportConfiguration?username={{api_user}}&apiKey={{api_token}}"
+    url: "{{eon_api_url}}/exportConfiguration?username={{eon_api_user}}&apiKey={{eon_api_token}}"
     method: POST
     headers:
       Content-Type: "application/json"

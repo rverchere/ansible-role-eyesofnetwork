@@ -25,8 +25,8 @@ Example Playbook
       name: eyesofnetwork
       tasks_from: install
     vars:
-      version: 5
-      release: 2
+      eon_version: 5
+      eon_release: 2
 ```
 
 Author Information

@@ -1,2 +1,17 @@
 ---
 # defaults file for ansible-role-eyesofnetwork
+
+# --- eyesofnetwork
+
+eon_version: 5
+eon_release: 2
+
+eon_api_url: https://172.23.1.100/eonapi
+eon_api_user: admin
+eon_api_token: b1b5fc00ef857e358fba608d918954c346b23fa5112ccf047163c589a35df60b
+
+# --- mod_gearman
+
+mod_gearman_broker: /usr/lib64/mod_gearman/mod_gearman_nagios4.o config=/etc/mod_gearman/module.conf
+mod_gearman_key: should_be_changed
+mod_gearman_key_path: /etc/mod_gearman/secret

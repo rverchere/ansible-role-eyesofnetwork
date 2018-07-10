@@ -12,7 +12,7 @@
     state: latest
   with_items:
     - epel-release
-    - https://download.eyesofnetwork.com/repos/{{version}}/base/eyesofnetwork-release-{{version}}-{{release}}.noarch.rpm
+    - https://download.eyesofnetwork.com/repos/{{eon_version}}/base/eyesofnetwork-release-{{eon_version}}-{{eon_release}}.noarch.rpm
     - https://labs.consol.de/repo/stable/rhel7/i386/labs-consol-stable.rhel7.noarch.rpm
   when: "'mod_gearman_worker' in group_names"
 
@@ -95,7 +95,7 @@
 
 - name: use eonapi to add broker
   uri:
-    url: "{{api_url}}/addEventBroker?username={{api_user}}&apiKey={{api_token}}"
+    url: "{{eon_api_url}}/addEventBroker?username={{eon_api_user}}&apiKey={{eon_api_token}}"
     method: POST
     headers:
       Content-Type: "application/json"

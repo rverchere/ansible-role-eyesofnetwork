@@ -3,7 +3,7 @@
 
 - name: use eonapi to create host
   uri:
-    url: "{{api_url}}/createHost?username={{api_user}}&apiKey={{api_token}}"
+    url: "{{eon_api_url}}/createHost?username={{eon_api_user}}&apiKey={{eon_api_token}}"
     method: POST
     headers:
       Content-Type: "application/json"
