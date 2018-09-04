@@ -38,3 +38,9 @@
     name: eonconf
     state: started
   when: check_path.stat.exists == false
+
+- name: wait until eyesofnetwork installed
+  wait_for:
+    path: /srv/eyesofnetworkrepo/extras
+    state: present
+    msg: "EyesOfNetwork is not installed !"
