@@ -6,7 +6,7 @@
   register: _old_grafana_pkgs
 
 - name: add grafana repository
-  template:
+  yum_repository:
     name: grafana
     description: grafana
     baseurl: "{{ grafana_repo }}"
