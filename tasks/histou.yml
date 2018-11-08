@@ -1,0 +1,9 @@
+# cd /tmp
+# wget -O histou.tar.gz https://github.com/Griesbacher/histou/archive/v0.4.3.tar.gz
+# mkdir -p /var/www/html/histou
+# cd /var/www/html/histou
+# tar xzf /tmp/histou.tar.gz --strip-components 1
+# cp histou.ini.example histou.ini
+# cp histou.js /usr/share/grafana/public/dashboards/
+---
+- name: todo

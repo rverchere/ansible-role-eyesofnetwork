@@ -18,6 +18,11 @@ grafana_version: latest
 grafana_package: "grafana{{ (grafana_version != 'latest') | ternary('-' ~ grafana_version, '') }}"
 grafana_firewalld: true
 
+# histou
+
+histou_git: https://github.com/Griesbacher/histou/archive/v0.4.3.tar.gz
+histou_path: /var/www/html/histou
+
 # --- influxdb
 
 influxdb_repo: https://repos.influxdata.com/centos/$releasever/$basearch/stable/
