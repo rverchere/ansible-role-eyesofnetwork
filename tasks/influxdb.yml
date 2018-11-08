@@ -1,0 +1,23 @@
+---
+- name: add influxdb repository
+  yum_repository:
+    name: influxdb
+    description: influxdb
+    baseurl: "{{ influxdb_repo }}"
+    gpgcheck: yes
+    gpgkey: "{{ influxdb_repo_key }}"
+
+- name: import influxdb rpm key
+  rpm_key:
+    key: "{{ influxdb_repo_key }}"
+    state: present
+
+- name: install influxdb
+  package:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+  - "{{ influxdb_packages }}"
+  retries: 5
+  delay: 2
+  notify: restart grafana

@@ -1,2 +1,14 @@
 ---
 # handlers file for ansible-role-eyesofnetwork
+
+- name: restart grafana
+  become: true
+  service:
+    name: grafana-server
+    state: restarted
+
+- name: restart influxdb
+  become: true
+  service:
+    name: influxdb
+    state: restarted
