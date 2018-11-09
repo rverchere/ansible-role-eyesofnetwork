@@ -3,6 +3,7 @@
 # mkdir -p /var/www/html/histou
 # cd /var/www/html/histou
 # tar xzf /tmp/histou.tar.gz --strip-components 1
+# patch with https://github.com/Griesbacher/histou/commit/133754ad0487c6af56a56c8d4ede876607480b79
 # cp histou.ini.example histou.ini
 # cp histou.js /usr/share/grafana/public/dashboards/
 ---
