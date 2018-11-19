@@ -1,15 +1,15 @@
+/* Create nagios commands for nagflux */
 INSERT INTO `nagios_command`(name,line,description)
 SELECT 'process-host-perfdata-file-nagflux','/bin/mv {{nagflux_log}}/host-perfdata {{nagflux_perfdata}}/$TIMET$.perfdata.host','process-host-perfdata-file-nagflux' from dual
 WHERE NOT EXISTS (SELECT id FROM `nagios_command` WHERE name='process-host-perfdata-file-nagflux');
-
 SELECT @host := `id` FROM `nagios_command` WHERE name='process-host-perfdata-file-nagflux';
 
 INSERT INTO `nagios_command`(name,line,description)
 SELECT 'process-service-perfdata-file-nagflux','/bin/mv {{nagflux_log}}/service-perfdata {{nagflux_perfdata}}/$TIMET$.perfdata.service','process-service-perfdata-file-nagflux' FROM dual
 WHERE NOT EXISTS (SELECT id FROM `nagios_command` WHERE name='process-service-perfdata-file-nagflux');
-
 SELECT @service := `id` FROM `nagios_command` WHERE name='process-service-perfdata-file-nagflux';
 
+/* Set nagios global configuration for nagflux */
 UPDATE `nagios_main_configuration` SET
 process_performance_data=1,
 host_perfdata_file='{{nagflux_log}}/host-perfdata',
@@ -21,4 +21,10 @@ service_perfdata_file='{{nagflux_log}}/service-perfdata',
 service_perfdata_file_template='DATATYPE::SERVICEPERFDATA\tTIMET::$TIMET$\tHOSTNAME::$HOSTNAME$\tSERVICEDESC::$SERVICEDESC$\tSERVICEPERFDATA::$SERVICEPERFDATA$\tSERVICECHECKCOMMAND::$SERVICECHECKCOMMAND$',
 service_perfdata_file_mode='a',
 service_perfdata_file_processing_interval=15,
-service_perfdata_file_processing_command=@service
+service_perfdata_file_processing_command=@service;
+
+/* Set nagios action_url configuration */
+UPDATE `nagios_host_template` SET action_url='http://{{ansible_host}}:3000/dashboard/script/histou.js?host=$HOSTNAME$' WHERE name='GENERIC_HOST';
+UPDATE `nagios_host` SET action_url='http://{{ansible_host}}:3000/dashboard/script/histou.js?host=$HOSTNAME$&service=$SERVICEDESC$' WHERE action_url LIKE '%pnp4nagios%';
+UPDATE `nagios_service_template` SET action_url='http://{{ansible_host}}:3000/dashboard/script/histou.js?host=$HOSTNAME$&service=$SERVICEDESC$' WHERE name='GENERIC_GRAPH';
+UPDATE `nagios_service` SET action_url='http://{{ansible_host}}:3000/dashboard/script/histou.js?host=$HOSTNAME$&service=$SERVICEDESC$' WHERE action_url LIKE '%pnp4nagios%';
