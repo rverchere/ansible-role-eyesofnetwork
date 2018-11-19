@@ -7,13 +7,8 @@
 
 - name: install all repos
   yum:
-    name: "{{ item }}"
+    name: "{{ eon_packages }}"
     state: latest
-  with_items:
-    - epel-release
-    - https://download.eyesofnetwork.com/repos/{{eon_version}}/base/eyesofnetwork-release-{{eon_version}}-{{eon_release}}.noarch.rpm
-    - https://labs.consol.de/repo/stable/rhel7/i386/labs-consol-stable.rhel7.noarch.rpm
-    - https://rpm.ocsinventory-ng.org/ocsinventory-release-latest.el7.ocs.noarch.rpm
 
 - name: install the latest 'eyesofnetwork-release' package
   yum:
