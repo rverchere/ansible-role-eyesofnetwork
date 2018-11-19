@@ -15,6 +15,13 @@
     path: "{{ histou_dir }}"
     state: directory
 
+- name: histou - copy files
+  synchronize:
+    src: "{{ histou_git_dir }}/"
+    dest: "{{ histou_dir }}/"
+    owner: false
+    group: false
+
 - name: histou - copy configuration file
   copy:
     src: "{{ histou_git_dir }}/histou.ini.example"
@@ -23,10 +30,17 @@
 - name: histou - copy js file
   copy:
     src: "{{ histou_git_dir }}/histou.js"
-    dest: "{{ grafana_dir }}/histou.ini"
+    dest: "{{ grafana_dir }}/histou.js"
 
 - name: histou - copy httpd configuration
   template:
     src: histou/histou.conf.j2
     dest: "/etc/httpd/conf.d/histou.conf"
   notify: reload httpd
+
+- name: histou - configure influxdb url
+  ini_file:
+    path: "{{ histou_dir }}/histou.ini"
+    section: "influxdb"
+    option: "url"
+    value: '"{{influxdb_url}}/query?db=nagflux"'

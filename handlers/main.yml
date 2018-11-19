@@ -1,6 +1,18 @@
 ---
 # handlers file for ansible-role-eyesofnetwork
 
+- name: export nagios
+  become: true
+  uri:
+    url: "{{eon_api_url}}/exportConfiguration?username={{eon_api_user}}&apiKey={{eon_api_token}}"
+    method: POST
+    headers:
+      Content-Type: "application/json"
+    body: '{ "jobName": {{eon_api_job_name}} }'
+    body_format: json
+    return_content: yes
+    validate_certs: no    
+    
 - name: restart grafana
   become: true
   service:

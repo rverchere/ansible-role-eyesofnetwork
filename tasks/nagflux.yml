@@ -14,6 +14,7 @@
     - "{{ nagflux_gopath }}"
     - "{{ nagflux_path }}"
     - "{{ nagflux_perfdata }}"
+    - "{{ nagflux_spool }}"
 
 - name: nagflux - set perfdata directory owners
   file:
@@ -46,6 +47,7 @@
 - name: nagflux - enable service
   systemd:
     name: nagflux.service
+    state: started
     enabled: yes
     daemon_reload: yes
 
@@ -54,3 +56,29 @@
     src: nagflux/config.gcfg.j2
     dest: "{{nagflux_path}}/config.gcfg"
   notify: restart nagflux
+
+- name: nagflux - copy nagios configuration
+  template:
+    src: nagflux/nagflux.sql.j2
+    dest: "/tmp/nagflux.sql"
+
+- name: nagflux - insert nagios configuration
+  mysql_db:
+    state: import
+    name: lilac
+    target: "/tmp/nagflux.sql"
+    login_user: "{{ nagflux_mysql_user }}"
+    login_password: "{{ nagflux_mysql_pass }}"
+  notify: export nagios
+
+- name: nagflux - create grafana datasource
+  grafana_datasource:
+    grafana_url: "{{ grafana_url }}"
+    grafana_user: "{{ grafana_admin_user }}"
+    grafana_password: "{{ grafana_admin_pass }}"
+    name: "nagflux"
+    url: "{{influxdb_url}}"
+    ds_type: "influxdb"
+    access: "proxy"
+    is_default: true
+    database: "nagflux"

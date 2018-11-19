@@ -21,8 +21,14 @@
   until: _install_packages is succeeded
   retries: 5
   delay: 2
-  notify: restart grafana
 
+- name: grafana - enable service
+  systemd:
+    name: grafana-server
+    state: started
+    enabled: yes
+    daemon_reload: yes
+      
 - name: grafana - start and enable firewalld
   service:
     name: firewalld

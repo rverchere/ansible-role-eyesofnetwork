@@ -20,4 +20,11 @@
   - "{{ influxdb_packages }}"
   retries: 5
   delay: 2
-  notify: restart grafana
+  notify: restart influxdb
+
+- name: influxdb - enable service
+  systemd:
+    name: influxdb
+    state: started
+    enabled: yes
+    daemon_reload: yes
