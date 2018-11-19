@@ -7,8 +7,20 @@
     name: grafana-server
     state: restarted
 
+- name: reload httpd
+  become: true
+  service:
+    name: httpd
+    state: reloaded
+
 - name: restart influxdb
   become: true
   service:
     name: influxdb
+    state: restarted
+
+- name: restart nagflux
+  become: true
+  service:
+    name: nagflux
     state: restarted

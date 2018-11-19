@@ -1,12 +1,12 @@
 ---
-- name: install nagflux dependencies
+- name: nagflux - install dependencies
   package:
     name: "{{ item }}"
     state: latest
   with_items:
   - "{{ nagflux_packages }}"
 
-- name: create nagflux directories
+- name: nagflux - create directories
   file: 
     path: "{{ item }}" 
     state: directory
@@ -15,25 +15,25 @@
     - "{{ nagflux_path }}"
     - "{{ nagflux_perfdata }}"
 
-- name: set nagflux perfdata directory owners
+- name: nagflux - set perfdata directory owners
   file:
     path: "{{ nagflux_perfdata }}"
     owner: nagios
     group: eyesofnetwork
 
-- name: get nagflux go project
+- name: nagflux - get go project
   shell: "go get -u {{ nagflux_git }}"
   environment:
     GOPATH: "{{ nagflux_gopath }}"
   changed_when: false
 
-- name: build nagflux go project
+- name: nagflux - build go project
   shell: "go build {{ nagflux_git }}"
   environment:
     GOPATH: "{{ nagflux_gopath }}"
   changed_when: false
 
-- name: copy nagflux files
+- name: nagflux - copy files
   copy:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
@@ -43,8 +43,14 @@
     - { src: "{{ nagflux_gopath }}/bin/nagflux", dest: "{{ nagflux_path }}", mode: +x }
     - { src: "{{ nagflux_gopath }}/src/github.com/griesbacher/nagflux/nagflux.service", dest: "/usr/lib/systemd/system/nagflux.service", mode: +x }
 
-- name: enable nagflux service
+- name: nagflux - enable service
   systemd:
     name: nagflux.service
     enabled: yes
     daemon_reload: yes
+
+- name: nagflux - copy configuration
+  template:
+    src: nagflux/config.gcfg.j2
+    dest: "{{nagflux_path}}/config.gcfg"
+  notify: restart nagflux

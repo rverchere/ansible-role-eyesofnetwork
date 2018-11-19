@@ -1,11 +1,11 @@
 ---
-- name: remove conflicting grafana packages
+- name: grafana - remove conflicting packages
   package:
     name: grafana-data
     state: absent
   register: _old_grafana_pkgs
 
-- name: add grafana repository
+- name: grafana - add repository
   yum_repository:
     name: grafana
     description: grafana
@@ -13,7 +13,7 @@
     gpgcheck: yes
     gpgkey: "{{ grafana_repo_key }}"
 
-- name: install grafana
+- name: grafana - install packages
   package:
     name: "{{ grafana_package }}"
     state: "{{ (grafana_version == 'latest') | ternary('latest', 'present') }}"
@@ -23,14 +23,14 @@
   delay: 2
   notify: restart grafana
 
-- name: start and enable firewalld
+- name: grafana - start and enable firewalld
   service:
     name: firewalld
     state: started
     enabled: yes
   when: grafana_firewalld
 
-- name: open port 3000
+- name: grafana - open port 3000
   firewalld:
     port: 3000/tcp
     permanent: true

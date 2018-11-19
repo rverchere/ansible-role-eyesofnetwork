@@ -12,6 +12,7 @@ eon_api_token: b1b5fc00ef857e358fba608d918954c346b23fa5112ccf047163c589a35df60b
 
 # --- grafana
 
+grafana_dir: /usr/share/grafana/public/dashboards/
 grafana_repo: https://packagecloud.io/grafana/stable/el/7/$basearch
 grafana_repo_key: https://packagecloud.io/gpg.key https://grafanarel.s3.amazonaws.com/RPM-GPG-KEY-grafana
 grafana_version: latest
@@ -20,8 +21,9 @@ grafana_firewalld: true
 
 # histou
 
-histou_git: https://github.com/Griesbacher/histou/archive/v0.4.3.tar.gz
-histou_path: /var/www/html/histou
+histou_dir: /srv/eyesofnetwork/histou
+histou_git: https://github.com/Griesbacher/histou.git
+histou_git_dir: /tmp/histou-git
 
 # --- influxdb
 
@@ -45,4 +47,5 @@ nagflux_packages:
 nagflux_gopath: /tmp/gorepo
 nagflux_path: /opt/nagflux
 nagflux_git: github.com/griesbacher/nagflux
-nagflux_perfdata: /var/spool/nagflux
+nagflux_perfdata: /var/log/nagios/spool/nagfluxperfdata
+nagflux_spool: /var/spool/nagflux

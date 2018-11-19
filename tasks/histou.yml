@@ -1,9 +1,32 @@
-# cd /tmp
-# wget -O histou.tar.gz https://github.com/Griesbacher/histou/archive/v0.4.3.tar.gz
-# mkdir -p /var/www/html/histou
-# cd /var/www/html/histou
-# tar xzf /tmp/histou.tar.gz --strip-components 1
-# cp histou.ini.example histou.ini
-# cp histou.js /usr/share/grafana/public/dashboards/
 ---
-- name: todo
+- name: histou - clone project
+  become: false
+  local_action:
+    module: git
+    repo: "{{ histou_git }}"
+    dest: "{{ histou_git_dir }}"
+    update: yes
+    force: yes
+    accept_hostkey: yes
+  run_once: yes
+
+- name: histou - create directory
+  file:
+    path: "{{ histou_dir }}"
+    state: directory
+
+- name: histou - copy configuration file
+  copy:
+    src: "{{ histou_git_dir }}/histou.ini.example"
+    dest: "{{ histou_dir }}/histou.ini"
+
+- name: histou - copy js file
+  copy:
+    src: "{{ histou_git_dir }}/histou.js"
+    dest: "{{ grafana_dir }}/histou.ini"
+
+- name: histou - copy httpd configuration
+  template:
+    src: histou/histou.conf.j2
+    dest: "/etc/httpd/conf.d/histou.conf"
+  notify: reload httpd
