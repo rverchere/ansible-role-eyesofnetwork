@@ -82,3 +82,9 @@
     access: "proxy"
     is_default: true
     database: "nagflux"
+
+- name: nagflux - disable npcd
+  systemd:
+    name: npcd
+    state: stopped
+    enabled: no

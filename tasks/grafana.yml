@@ -43,3 +43,24 @@
     immediate: true
     state: enabled
   when: grafana_firewalld
+
+- name: grafana - check if eonweb
+  stat: path=/srv/eyesofnetwork/eonweb
+  register: check_eonweb
+
+- name: grafana - update eonweb menus
+  replace:
+    path: "/srv/eyesofnetwork/eonweb/include/languages/menus.json"
+    regexp: "/pnp4nagios/"
+    replace: "{{ grafana_url }}"
+  when: check_eonweb.stat.exists == True
+
+- name: grafana - update eonweb traductions
+  replace:
+    path: "{{item.path}}"
+    regexp: "Pnp4nagios"
+    replace: "Grafana"
+  with_items:
+    - { path: "/srv/eyesofnetwork/eonweb/include/languages/messages.json" }
+    - { path: "/srv/eyesofnetwork/eonweb/include/languages/messages-fr.json" }
+  when: check_eonweb.stat.exists == True

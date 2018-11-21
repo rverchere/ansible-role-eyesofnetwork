@@ -12,7 +12,7 @@ eon_packages:
   - https://labs.consol.de/repo/stable/rhel7/i386/labs-consol-stable.rhel7.noarch.rpm
   - https://rpm.ocsinventory-ng.org/ocsinventory-release-latest.el7.ocs.noarch.rpm
 
-eon_api_url: https://192.168.115.130/eonapi
+eon_api_url: https://{{ ansible_host }}/eonapi
 eon_api_user: admin
 eon_api_token: 0e6ed5c0a92adebbcc2a2903dc2c41a6820314d72775b312c94b5d14e9752f5b
 eon_api_job_name: nagios
@@ -29,7 +29,7 @@ grafana_url: "http://{{ ansible_host }}:3000"
 grafana_admin_user: admin
 grafana_admin_pass: admin
 
-# histou
+# --- histou
 
 histou_dir: /srv/eyesofnetwork/histou
 histou_git: https://github.com/Griesbacher/histou.git
