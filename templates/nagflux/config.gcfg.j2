@@ -33,3 +33,9 @@
     Address = "http://127.0.0.1:8086"
     Arguments = "precision=ms&u=root&p=root&db=fast"
     StopPullingDataIfDown = false
+
+[Livestatus]
+    Type = "file"
+    Address = "{{nagflux_log}}}/rw/live"
+    MinutesToWait = 2
+    Version = "Nagios"

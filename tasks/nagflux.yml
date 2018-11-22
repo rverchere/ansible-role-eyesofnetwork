@@ -41,8 +41,15 @@
     mode: "{{ item.mode }}"
     remote_src: yes
   with_items:
-    - { src: "{{ nagflux_gopath }}/bin/nagflux", dest: "{{ nagflux_path }}", mode: +x }
-    - { src: "{{ nagflux_gopath }}/src/github.com/griesbacher/nagflux/nagflux.service", dest: "/usr/lib/systemd/system/nagflux.service", mode: +x }
+    - { src: "{{ nagflux_gopath }}/bin/nagflux", dest: "{{ nagflux_path }}", mode: 744 }
+    - { src: "{{ nagflux_gopath }}/src/github.com/griesbacher/nagflux/nagflux.service", dest: "/usr/lib/systemd/system/nagflux.service", mode: 644 }
+
+- name: nagflux - configure nagflux service
+  ini_file:
+    path: "/usr/lib/systemd/system/nagflux.service"
+    section: "Service"
+    option: "ExecStart"
+    value: "{{ nagflux_path }}/nagflux -configPath {{ nagflux_path }}/config.gcfg"
 
 - name: nagflux - enable service
   systemd:
@@ -61,6 +68,12 @@
   template:
     src: nagflux/nagflux.sql.j2
     dest: "/tmp/nagflux.sql"
+
+- name: nagflux - copy pnp4nagios migrate script
+  template:
+    src: nagflux/migrate_pnp_to_nagflux.pl.j2
+    dest: "{{nagflux_path}}/migrate_pnp_to_nagflux.pl"
+    mode: 0744
 
 - name: nagflux - insert nagios configuration
   mysql_db:

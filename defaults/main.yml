@@ -56,8 +56,10 @@ nagflux_packages:
   - golang
   - git
   - MySQL-python
+  - perl-Cpanel-JSON-XS
+  - perl-XML-LibXML
 nagflux_gopath: /tmp/gorepo
-nagflux_path: /opt/nagflux
+nagflux_path: /srv/eyesofnetwork/nagflux
 nagflux_git: github.com/griesbacher/nagflux
 nagflux_log: /var/log/nagios
 nagflux_mysql_user: root
