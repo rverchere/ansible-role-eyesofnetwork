@@ -37,6 +37,7 @@ histou_git_dir: /tmp/histou-git
 
 # --- influxdb
 
+influxdb_config: /etc/influxdb/influxdb.conf
 influxdb_repo: https://repos.influxdata.com/centos/$releasever/$basearch/stable/
 influxdb_repo_key: https://repos.influxdata.com/influxdb.key
 influxdb_packages:

@@ -20,6 +20,16 @@
   - "{{ influxdb_packages }}"
   retries: 5
   delay: 2
+
+- name: influxdb - modify configuration
+  ini_file:
+    path: "{{ influxdb_config }}"
+    section: "{{item.section}}"
+    option: "  {{item.option}}"
+    value: "{{item.value}}"
+  with_items:
+    - { section: http, option: log-enabled, value: "false" }
+    - { section: logging, option: level, value: '"error"' }
   notify: restart influxdb
 
 - name: influxdb - enable service
