@@ -34,8 +34,11 @@
 
 - name: histou - copy httpd configuration
   template:
-    src: histou/histou.conf.j2
-    dest: "/etc/httpd/conf.d/histou.conf"
+    src:  "histou/{{item.src}}"
+    dest: "{{item.dest}}"
+  with_items:
+    - { src: "histou.conf.j2", dest: "/etc/httpd/conf.d/histou.conf" }
+    - { src: "_histou_graph.tt.j2", dest: "/usr/share/thruk/templates/_histou_graph.tt" }
   notify: reload httpd
 
 - name: histou - configure influxdb url
