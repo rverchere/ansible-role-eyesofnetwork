@@ -59,8 +59,14 @@
       value: "{{item.value}}"
     with_items:
       - { section: server, option: http_addr, value: "127.0.0.1" }
-      - { section: server, option: root_url, value: "{{grafana_url}}/grafana" }
+      - { section: server, option: root_url, value: "%(protocol)s://%(domain)s/grafana/" }
+      - { section: users, option: allow_sign_up, value: "false" }
+      - { section: users, option: allow_org_create, value: "false" }
       - { section: users, option: default_theme, value: '"light"' }
+      - { section: auth, option: disable_login_form, value: "true" }
+      - { section: auth, option: disable_signout_menu, value: "true" }
+      - { section: auth.proxy, option: enabled, value: "true" }
+      - { section: auth.proxy, option: whitelist, value: "" }
     notify: restart grafana
 
   - name: grafana - apache configuration

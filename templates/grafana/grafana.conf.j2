@@ -6,16 +6,24 @@
 </IfModule>
 
 <Location /grafana>
+    AuthType Basic
+    AuthName "Restricted"
+    AuthEonAuthoritative On
+    AuthEonMySQLSocket /var/lib/mysql/mysql.sock
+    AuthEonMySQLUsername eonweb
+    AuthEonMySQLPassword root66
+    AuthEonMySQLDB eonweb
+    AuthEonMySQLTableSID sessions,users,groupright
+    AuthEonMySQLFieldUID sessions.user_id
+    AuthEonMySQLTableSIDCondition "`sessions`.`session_id`=$session_id AND `sessions`.`user_id`=$user_id AND `users`.`user_id`=$user_id AND `users`.`user_name`=$user_name AND `users`.`group_id`=$group_id AND `groupright`.`group_id`=$group_id AND `groupright`.`tab_2`='1'"
+    AuthEonPageLogin /login.php
+    AuthEonSessionCookies On
+    Require valid-user
+
     ProxyPass {{grafana_url}} retry=0 disablereuse=On
     ProxyPassReverse {{grafana_url}}/grafana
     RewriteEngine On
     RewriteRule .* - [E=PROXY_USER:%{LA-U:REMOTE_USER},NS]
-    SetEnvIf Request_Protocol ^HTTPS.* IS_HTTPS=1
-    SetEnvIf Authorization "^.+$" IS_BASIC_AUTH=1
-    # without thruk cookie auth, use the proxy user from the rewrite rule above
-    RequestHeader set X-WEBAUTH-USER "%{PROXY_USER}s"  env=IS_HTTPS
-    RequestHeader set X-WEBAUTH-USER "%{PROXY_USER}e"  env=!IS_HTTPS
-    # when thruk cookie auth is used, fallback to remote user directly
-    RequestHeader set X-WEBAUTH-USER "%{REMOTE_USER}e" env=!IS_BASIC_AUTH
+    RequestHeader set X-WEBAUTH-USER "%{PROXY_USER}e"
     RequestHeader unset Authorization
 </Location>
