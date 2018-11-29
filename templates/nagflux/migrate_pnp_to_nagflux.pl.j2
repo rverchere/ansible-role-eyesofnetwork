@@ -100,7 +100,7 @@ for my $xml_file (@xml_files) {
     my $service = $xml->{'NAGIOS_DISP_SERVICEDESC'};
     my $cmd     = $xml->{'NAGIOS_CHECK_COMMAND'};
     my $type    = 'SERVICEPERFDATA';
-    if($service eq '_HOST_') {
+    if($service eq '_HOST_' or $service eq 'Host Perfdata') {
         $service = '';
         $type    = 'HOSTPERFDATA';
     }
