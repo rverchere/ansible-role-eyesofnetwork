@@ -28,6 +28,7 @@
     option: "  {{item.option}}"
     value: "{{item.value}}"
   with_items:
+    - { section: http, option: bind-address, value: '"127.0.0.1:8086"' }
     - { section: http, option: log-enabled, value: "false" }
     - { section: logging, option: level, value: '"error"' }
   notify: restart influxdb
