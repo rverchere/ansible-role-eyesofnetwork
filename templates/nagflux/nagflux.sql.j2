@@ -24,7 +24,7 @@ service_perfdata_file_processing_interval=15,
 service_perfdata_file_processing_command=@service;
 
 /* Set nagios action_url configuration */
-UPDATE `nagios_host_template` SET action_url='/grafana/dashboard/script/histou.js?host=$HOSTNAME$' WHERE name='GENERIC_HOST';
+UPDATE `nagios_host_template` SET action_url='/grafana/dashboard/script/histou.js?host=$HOSTNAME$' WHERE action_url LIKE '%histou%' or action_url LIKE '%pnp4nagios%';
 UPDATE `nagios_host` SET action_url='/grafana/dashboard/script/histou.js?host=$HOSTNAME$&service=$SERVICEDESC$' WHERE action_url LIKE '%histou%' or action_url LIKE '%pnp4nagios%';
-UPDATE `nagios_service_template` SET action_url='/grafana/dashboard/script/histou.js?host=$HOSTNAME$&service=$SERVICEDESC$' WHERE name='GENERIC_GRAPH';
+UPDATE `nagios_service_template` SET action_url='/grafana/dashboard/script/histou.js?host=$HOSTNAME$&service=$SERVICEDESC$' WHERE action_url LIKE '%histou%' or action_url LIKE '%pnp4nagios%';
 UPDATE `nagios_service` SET action_url='/grafana/dashboard/script/histou.js?host=$HOSTNAME$&service=$SERVICEDESC$' WHERE action_url LIKE '%histou%' or action_url LIKE '%pnp4nagios%';
