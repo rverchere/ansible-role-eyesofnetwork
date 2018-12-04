@@ -48,40 +48,38 @@
   stat: path=/srv/eyesofnetwork/eonweb
   register: check_eonweb
 
-- name: grafana - eon configuration
-  block:
+- name : grafana - global configuration
+  ini_file:
+    path: "{{ grafana_config }}"
+    section: "{{item.section}}"
+    option: "{{item.option}}"
+    value: "{{item.value}}"
+  with_items:
+    - { section: server, option: http_addr, value: "127.0.0.1" }
+    - { section: server, option: root_url, value: "%(protocol)s://%(domain)s/grafana/" }
+    - { section: users, option: allow_sign_up, value: "false" }
+    - { section: users, option: allow_org_create, value: "false" }
+    - { section: users, option: default_theme, value: '"light"' }
+    - { section: auth, option: disable_login_form, value: "true" }
+    - { section: auth, option: disable_signout_menu, value: "true" }
+    - { section: auth.proxy, option: enabled, value: "true" }
+    - { section: auth.proxy, option: whitelist, value: "" }
+  notify: restart grafana
+  when: check_eonweb.stat.exists == True
+  
+- name: grafana - apache configuration
+  template:
+    src: grafana/grafana.conf.j2
+    dest: "/etc/httpd/conf.d/grafana.conf"
+  notify: reload httpd
+  when: check_eonweb.stat.exists == True
 
-  - name : grafana - global configuration
-    ini_file:
-      path: "{{ grafana_config }}"
-      section: "{{item.section}}"
-      option: "{{item.option}}"
-      value: "{{item.value}}"
-    with_items:
-      - { section: server, option: http_addr, value: "127.0.0.1" }
-      - { section: server, option: root_url, value: "%(protocol)s://%(domain)s/grafana/" }
-      - { section: users, option: allow_sign_up, value: "false" }
-      - { section: users, option: allow_org_create, value: "false" }
-      - { section: users, option: default_theme, value: '"light"' }
-      - { section: auth, option: disable_login_form, value: "true" }
-      - { section: auth, option: disable_signout_menu, value: "true" }
-      - { section: auth.proxy, option: enabled, value: "true" }
-      - { section: auth.proxy, option: whitelist, value: "" }
-    notify: restart grafana
-
-  - name: grafana - apache configuration
-    template:
-      src: grafana/grafana.conf.j2
-      dest: "/etc/httpd/conf.d/grafana.conf"
-    notify: reload httpd
-
-  - name: grafana - update eonweb menus
-    template:
-      src:  "grafana/{{item.src}}"
-      dest: "{{item.dest}}"
-    with_items:
-      - { src: custom.menus.json.j2, dest: /srv/eyesofnetwork/eonweb/include/languages/custom.menus.json }
-      - { src: custom.messages.json.j2, dest: /srv/eyesofnetwork/eonweb/include/languages/custom.messages.json }
-      - { src: custom.messages-fr.json.j2, dest: /srv/eyesofnetwork/eonweb/include/languages/custom.messages-fr.json }
-
+- name: grafana - update eonweb menus
+  template:
+    src:  "grafana/{{item.src}}"
+    dest: "{{item.dest}}"
+  with_items:
+    - { src: custom.menus.json.j2, dest: /srv/eyesofnetwork/eonweb/include/languages/custom.menus.json }
+    - { src: custom.messages.json.j2, dest: /srv/eyesofnetwork/eonweb/include/languages/custom.messages.json }
+    - { src: custom.messages-fr.json.j2, dest: /srv/eyesofnetwork/eonweb/include/languages/custom.messages-fr.json }
   when: check_eonweb.stat.exists == True
