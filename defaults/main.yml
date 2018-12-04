@@ -55,7 +55,6 @@ mod_gearman_key_path: /etc/mod_gearman/secret
 # --- nagflux
 
 nagflux_packages:
-  - golang
   - git
   - MySQL-python
   - perl-Cpanel-JSON-XS
