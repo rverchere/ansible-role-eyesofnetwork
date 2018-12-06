@@ -6,12 +6,6 @@
   with_items:
   - "{{ nagflux_packages }}"
 
-- name: nagflux - install golang
-  package:
-    name: golang
-    state: latest
-    enablerepo: epel-testing
-
 - name: nagflux - create directories
   file: 
     path: "{{ item }}" 
