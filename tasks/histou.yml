@@ -32,13 +32,18 @@
     src: "{{ histou_git_dir }}/histou.js"
     dest: "{{ grafana_dir }}/histou.js"
 
-- name: histou - copy httpd configuration
+- name: histou - create thruk templates directory
+  file:
+    path: "{{histou_thruk_template}}"
+    state: directory
+
+- name: histou - copy httpd configuration & thruk template
   template:
     src:  "histou/{{item.src}}"
     dest: "{{item.dest}}"
   with_items:
     - { src: "histou.conf.j2", dest: "/etc/httpd/conf.d/histou.conf" }
-    - { src: "_histou_graph.tt.j2", dest: "/usr/share/thruk/templates/_histou_graph.tt" }
+    - { src: "_histou_graph.tt.j2", dest: "{{histou_thruk_template}}/_histou_graph.tt" }
   notify: reload httpd
 
 - name: histou - configure influxdb url
