@@ -1,0 +1,1 @@
+0 5 * * * root /usr/bin/influxd backup -db nagflux -portable --since `date --rfc-3339=seconds -d "Yesterday -5 minutes" | sed 's/ /T/' | sed 's/+.*/Z/'` {{ influxdb_backup_dir }} > /dev/null 2>&1

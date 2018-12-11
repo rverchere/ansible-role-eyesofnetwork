@@ -33,6 +33,21 @@
     - { section: logging, option: level, value: '"error"' }
   notify: restart influxdb
 
+- name: influxdb - ensure backup folder exists
+  file:
+    path: "{{ influxdb_backup_dir }}"
+    state: directory
+    owner: root
+    group: root
+
+- name: influxdb - copy cron backup
+  template:
+    src: "influxdb/influxdb.cron.j2"
+    dest: "/etc/cron.d/influxdb"
+    owner: root
+    group: root
+    mode: 0644
+
 - name: influxdb - enable service
   systemd:
     name: influxdb

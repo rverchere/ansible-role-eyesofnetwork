@@ -46,6 +46,7 @@ influxdb_packages:
   - influxdb
   - which
 influxdb_url: http://localhost:8086
+influxdb_backup_dir: /var/archives/influxdb/
 
 # --- mod_gearman
 
