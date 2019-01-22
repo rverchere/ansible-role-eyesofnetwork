@@ -67,6 +67,8 @@
       - { section: auth, option: disable_signout_menu, value: "true" }
       - { section: auth.proxy, option: enabled, value: "true" }
       - { section: auth.proxy, option: whitelist, value: "" }
+      - { section: auth.anonymous, option: enabled, value: "true" }
+      - { section: auth.anonymous, option: org_role, value: "Viewer" }
     notify: restart grafana
 
   - name: grafana - apache configuration
