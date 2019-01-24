@@ -11,7 +11,8 @@
     body: '{ "jobName": {{eon_api_job_name}} }'
     body_format: json
     return_content: yes
-    validate_certs: no    
+    validate_certs: no
+  ignore_errors: True
     
 - name: restart grafana
   become: true
