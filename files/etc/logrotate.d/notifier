@@ -1,0 +1,9 @@
+/srv/eyesofnetwork/notifier/log/notifier_send.log
+/srv/eyesofnetwork/notifier/log/notifier_rules.log
+/srv/eyesofnetwork/notifier/log/notifier.log {
+    missingok
+    monthly
+    notifempty
+    compress
+    create 0664 nagios eyesofnetwork
+}

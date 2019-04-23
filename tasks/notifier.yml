@@ -1,0 +1,8 @@
+---
+- name: notifier - set logrotate
+  copy:
+    src: "etc/logrotate.d/notifier"
+    dest: "/etc/logrotate.d/notifier"
+    owner: root
+    group: root
+    mode: 0644
