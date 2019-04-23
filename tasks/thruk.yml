@@ -24,3 +24,10 @@
     line: "        Require ip 127.0.0.1"
     insertafter: "^        Require valid-user"
   notify: reload httpd
+
+- name: thruk - set admin as default user
+  lineinfile:
+    path: /etc/thruk/cgi.cfg
+    regexp: "^default_user_name=$"
+    line: "default_user_name=admin"
+  notify: reload httpd
