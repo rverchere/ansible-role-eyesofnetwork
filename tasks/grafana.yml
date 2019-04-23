@@ -86,4 +86,18 @@
       - { src: custom.messages.json.j2, dest: /srv/eyesofnetwork/eonweb/include/languages/custom.messages.json }
       - { src: custom.messages-fr.json.j2, dest: /srv/eyesofnetwork/eonweb/include/languages/custom.messages-fr.json }
 
+  - name: grafana - add thruk datasource plugin
+    grafana_plugin:
+      name: sni-thruk-datasource
+      state: present
+    notify: restart grafana
+
+  - name: grafana - add thruk datasource
+    grafana_datasource:
+      name: "Thruk"
+      grafana_url: "https://127.0.0.1/thruk/"
+      ds_type: "Thruk"
+      tls_skip_verify : yes
+      state: present
+
   when: check_eonweb.stat.exists == True
