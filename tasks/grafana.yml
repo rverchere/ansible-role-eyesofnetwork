@@ -92,12 +92,19 @@
       state: present
     notify: restart grafana
 
+  - name: grafana - force restart
+    meta: flush_handlers
+
   - name: grafana - add thruk datasource
     grafana_datasource:
       name: "Thruk"
-      grafana_url: "https://127.0.0.1/thruk/"
-      ds_type: "Thruk"
+      grafana_url: "http://127.0.0.1:3000"
+      url: "https://127.0.0.1/thruk/"
+      ds_type: "sni-thruk-datasource"
       tls_skip_verify : yes
+      validate_certs: no
       state: present
+    notify: restart grafana
+    ignore_errors: true
 
   when: check_eonweb.stat.exists == True
