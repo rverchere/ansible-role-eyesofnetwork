@@ -1,0 +1,10 @@
+---
+- name: ensure thruk cookie auth vhost file is empty
+  copy:
+    content: ""
+    dest: /etc/httpd/conf.d/thruk_cookie_auth_vhost.conf
+    force: yes
+    group: root
+    owner: root
+    mode: 0644
+  notify: reload httpd
