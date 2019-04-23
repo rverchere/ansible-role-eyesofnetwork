@@ -16,6 +16,7 @@
     path: /etc/httpd/conf.d/thruk.conf
     regexp: "^\\s+AliasMatch\\s+\\^\\/thruk\\/\\(\\.\\*\\\\.cgi\\|\\.\\*\\\\.html\\)\\s+\\/usr\\/share\\/thruk\\/fcgid_env\\.sh\\/thruk\\/\\$1"
     line: "  AliasMatch ^/thruk/(.*\\.cgi|.*\\.html|r/.*)  /usr/share/thruk/fcgid_env.sh/thruk/$1"
+    backrefs: yes
   notify: reload httpd
 
 - name: thruk - set API available from localhost
@@ -30,4 +31,5 @@
     path: /etc/thruk/cgi.cfg
     regexp: "^default_user_name=$"
     line: "default_user_name=admin"
+    backrefs: yes
   notify: reload httpd
