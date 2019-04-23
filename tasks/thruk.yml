@@ -14,8 +14,8 @@
 - name: thruk - be sure API is available in httpd
   lineinfile:
     path: /etc/httpd/conf.d/thruk.conf
-    regexp: "^  AliasMatch ^/thruk/(.*\.cgi|.*\.html)  /usr/share/thruk/fcgid_env.sh/thruk/$1"
-    line: "  AliasMatch ^/thruk/(.*\.cgi|.*\.html|r/.*)  /usr/share/thruk/fcgid_env.sh/thruk/$1"
+    regexp: "^\\s+AliasMatch\\s+\\^\\/thruk\\/\\(\\.\\*\\\\.cgi\\|\\.\\*\\\\.html\\)\\s+\\/usr\\/share\\/thruk\\/fcgid_env\\.sh\\/thruk\\/\\$1"
+    line: "  AliasMatch ^/thruk/(.*\\.cgi|.*\\.html|r/.*)  /usr/share/thruk/fcgid_env.sh/thruk/$1"
   notify: reload httpd
 
 - name: thruk - set API available from localhost
