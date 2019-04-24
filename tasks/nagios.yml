@@ -6,7 +6,7 @@
     option: "{{ item.option }}"
     value: "{{ item.value }}"
     no_extra_spaces: yes
-  notify: reload systemd deamon
+  notify: reload systemd daemon
   loop:
     - option: Restart
       value: always
