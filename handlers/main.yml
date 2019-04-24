@@ -38,6 +38,6 @@
     name: nagflux
     state: restarted
 
-- name: reload systemd deamon
+- name: reload systemd daemon
   systemd:
     daemon_reload: yes
