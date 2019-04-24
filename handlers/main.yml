@@ -37,3 +37,7 @@
   service:
     name: nagflux
     state: restarted
+
+- name: reload systemd deamon
+  systemd:
+    daemon_reload: yes
