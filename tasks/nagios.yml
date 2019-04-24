@@ -1,0 +1,16 @@
+---
+- name: nagios - set systemd to always restart
+  ini_file:
+    path: "/usr/lib/systemd/system/nagios.service"
+    section: Service
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+    no_extra_spaces: yes
+  notify: reload systemd daemon
+  loop:
+    - option: Restart
+      value: always
+    - option: RestartSec
+      value: 1
+    - option: ExecStartPost
+      value: /bin/sleep 0.5
