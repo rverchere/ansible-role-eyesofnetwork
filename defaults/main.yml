@@ -6,6 +6,8 @@
 eon_version: 5
 eon_release: 2
 
+eon_timezone: "Europe/Paris"
+
 eon_packages:
   - epel-release
   - https://download.eyesofnetwork.com/repos/{{eon_version}}/base/eyesofnetwork-release-{{eon_version}}-{{eon_release}}.noarch.rpm
@@ -16,6 +18,58 @@ eon_api_url: https://{{ ansible_host }}/eonapi
 eon_api_user: admin
 eon_api_token: 0e6ed5c0a92adebbcc2a2903dc2c41a6820314d72775b312c94b5d14e9752f5b
 eon_api_job_name: nagios
+
+# --- eonconf
+
+eon_firstboot: true
+
+eon_mariadb_passwd: root66
+eon_mariadb_oldpasswd: ""
+eon_mariadb_ged_passwd: whaza
+
+eon_eonconf_packages:
+  - MySQL-python
+
+eon_repos:
+  - base
+  - extras
+  - updates
+
+eon_services_enabled:
+  - chronyd
+  - gedd
+  - httpd
+  - mariadb
+  - nagios
+  - rsyslog
+  - snmpd
+  - snmptrapd
+  - snmptt
+
+eon_services_disabled:
+  - firewalld
+
+eon_path: "/srv/eyesofnetwork"
+eon_path_eonconf: "{{eon_path}}conf"
+eon_path_repos: "{{eon_path}}repo"
+eon_path_eonweb: "{{eon_path}}/eonweb"
+eon_path_ged: "{{eon_path}}/ged"
+eon_path_glpi: "{{eon_path}}/glpi"
+eon_path_ocs: "{{eon_path}}/ocsinventory-reports"
+
+eon_php_ini:
+  - regexp: "^date.timezone ="
+    line: "date.timezone = \"{{eon_timezone}}\""
+  - regexp: "^max_execution_time ="
+    line: "max_execution_time = 300"
+  - regexp: "^memory_limit ="
+    line: "memory_limit = 256M"
+  - regexp: "^error_reporting ="
+    line: "error_reporting = E_ERROR"
+
+eon_sudoers:
+  - regexp: "^apache ALL=NOPASSWD"
+    line: "apache ALL=NOPASSWD:/bin/systemctl * snmptt,/bin/systemctl * snmptrapd,/bin/systemctl * snmpd,/bin/systemctl * nagios,/bin/systemctl * gedd,/usr/bin/nmap"
 
 # --- grafana
 
