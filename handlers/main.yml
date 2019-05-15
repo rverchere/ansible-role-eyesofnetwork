@@ -50,6 +50,12 @@
     name: mariadb
     state: restarted
 
+- name: restart snmptrapd
+  become: true
+  service:
+    name: snmptrapd
+    state: restarted
+
 - name: reload systemd daemon
   systemd:
     daemon_reload: yes

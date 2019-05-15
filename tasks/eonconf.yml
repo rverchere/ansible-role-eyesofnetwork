@@ -6,7 +6,12 @@
     state: latest
 
 # Configure system
-- name: disable selinux
+- name: eonconf - set issue
+  template:
+    src: "eonconf/issue.j2"
+    dest: "/etc/issue"
+
+- name: eonconf - disable selinux
   selinux:
     state: disabled
 
@@ -20,6 +25,18 @@
     regexp: "{{item.regexp}}"
     line: "{{item.line}}"
   with_items: "{{eon_sudoers}}"
+
+- name: eonconf - configure snmptrapd
+  template:
+    src: "eonconf/snmptrapd.conf.j2"
+    dest: "/etc/snmp/snmptrapd.conf"
+  notify: restart snmptrapd
+
+- name: eonconf - add apache user into eyesofnetwork group
+  user:
+    name: apache
+    groups: apache,eyesofnetwork
+    append: yes
 
 # Configure services
 - name: eonconf - enable services
@@ -76,6 +93,7 @@
     login_user: root
     login_password: "{{eon_mariadb_oldpasswd}}"
   when: eon_firstboot
+  ignore_errors: yes
 
 - name: eonconf - check mariadb timezones
   command: mysql --password={{eon_mariadb_passwd}} -NBe "SELECT COUNT(*) FROM mysql.time_zone"
@@ -108,4 +126,10 @@
   file:
     path: "{{eon_path_repos}}/{{item}}"
     state: directory
+  with_items: "{{eon_repos}}"
+
+- name: eonconf - update local repos
+  command: createrepo --update "{{eon_path_repos}}/{{item}}"
+  changed_when: false
+  check_mode: no
   with_items: "{{eon_repos}}"

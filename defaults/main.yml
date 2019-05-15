@@ -5,6 +5,7 @@
 
 eon_version: 5
 eon_release: 2
+eon_surname: Laura
 
 eon_timezone: "Europe/Paris"
 
@@ -48,6 +49,8 @@ eon_services_enabled:
 
 eon_services_disabled:
   - firewalld
+
+eon_snmptrapd_community: EyesOfNetwork
 
 eon_path: "/srv/eyesofnetwork"
 eon_path_eonconf: "{{eon_path}}conf"
