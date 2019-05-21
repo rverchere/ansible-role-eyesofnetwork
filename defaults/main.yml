@@ -78,8 +78,8 @@ eon_sudoers:
 
 grafana_config: /etc/grafana/grafana.ini
 grafana_dir: /usr/share/grafana/public/dashboards/
-grafana_repo: https://packagecloud.io/grafana/stable/el/7/$basearch
-grafana_repo_key: https://packagecloud.io/gpg.key https://grafanarel.s3.amazonaws.com/RPM-GPG-KEY-grafana
+grafana_repo: https://packages.grafana.com/oss/rpm
+grafana_repo_key: https://packages.grafana.com/gpg.key
 grafana_version: latest
 grafana_package: "grafana{{ (grafana_version != 'latest') | ternary('-' ~ grafana_version, '') }}"
 grafana_firewalld: true
