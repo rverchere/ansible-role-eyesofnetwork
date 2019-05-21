@@ -1,0 +1,3 @@
+SELECT user_id,user_name,user_descr,user_passwd,nagios_contact.email as user_email,nagios_contact.pager as user_pager
+FROM users LEFT OUTER JOIN lilac.nagios_contact ON lilac.nagios_contact.NAME = users.user_name
+ORDER BY user_name

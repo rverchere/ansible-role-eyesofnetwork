@@ -105,6 +105,20 @@ influxdb_packages:
 influxdb_url: http://localhost:8086
 influxdb_backup_dir: /var/archives/influxdb/
 
+# --- linotp
+
+linotp_version: "1.1-1"
+linotp_packages:
+  - LinOTP
+  - LinOTP_apache
+  - LinOTP_mariadb
+linotp_hostname: "linotp.axians.local"
+linotp_config: "/etc/linotp2/linotp.ini"
+linotp_enckey: "/etc/linotp2/encKey"
+linotp_database: linotp
+linotp_db_user: linotp 
+linotp_db_pass: linotp66
+
 # --- mod_gearman
 
 mod_gearman_broker: /usr/lib64/mod_gearman/mod_gearman_nagios4.o config=/etc/mod_gearman/module.conf

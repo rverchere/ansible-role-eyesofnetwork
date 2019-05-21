@@ -1,0 +1,58 @@
+---
+# add linotp for eyesofnetwork
+
+- name: linotp - install repositories
+  yum:
+    name:  https://linotp.org/rpm/el7/linotp/x86_64/Packages/LinOTP_repos-{{linotp_version}}.el7.x86_64.rpm
+    state: present
+
+- name: linotp - install packages
+  yum:
+    name: "{{linotp_packages}}"
+    state: latest
+
+- name: linotp - check encryption key
+  stat:
+    path: "{{linotp_enckey}}"
+  register: enckey
+
+- name: linotp - generate enckey
+  command: "dd if=/dev/urandom of={{linotp_enckey}} bs=1 count=128"
+  when: enckey.stat.size is not defined or enckey.stat.size == 0
+
+- name: linotp - set enckey rights  
+  file:
+    path: "{{linotp_enckey}}"
+    owner: linotp
+    mode: '640'
+
+- name: linotp - create mariadb database  
+  mysql_db:
+    name: "{{linotp_database}}"
+    state: present
+    login_user: root
+    login_password: "{{eon_mariadb_passwd}}"
+
+- name: linotp - create mariadb linotp user
+  mysql_user:
+    name: "{{linotp_db_user}}"
+    password: "{{linotp_db_pass}}"
+    priv: '{{linotp_database}}.*:ALL'
+    state: present
+    login_user: root
+    login_password: "{{eon_mariadb_passwd}}"
+
+- name: eonconf - main configuration
+  template:
+    src: "linotp/linotp.ini.j2"
+    dest: "{{linotp_config}}"
+
+- name: linotp - httpd configuration
+  template:
+    src: "{{item.src}}"
+    dest: "{{item.dest}}"
+  with_items:
+    - { src: "linotp/apache-servername.conf.j2", dest: "/etc/linotp2/apache-servername.conf" }
+    - { src: "linotp/ssl_linotp.conf.j2", dest: "/etc/httpd/conf.d/ssl_linotp.conf" }
+  notify:
+    - reload httpd

@@ -107,20 +107,6 @@
   notify:
     - restart mariadb
 
-- name: eonconf - create mariadb ged database
-  mysql_db:
-    state: present
-    name: ged
-    login_password: "{{eon_mariadb_passwd}}"
-  
-- name: eonconf - create mariadb ged user
-  mysql_user:
-    name: gedadmin
-    password: "{{eon_mariadb_ged_passwd}}"
-    priv: 'ged.*:ALL'
-    state: present
-    login_password: "{{eon_mariadb_passwd}}"
-
 # Configure repos
 - name: eonconf - create local repos
   file:
