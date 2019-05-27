@@ -34,7 +34,7 @@
     name: firewalld
     state: started
     enabled: yes
-  when: grafana_firewalld
+  when: grafana_firewalld | bool
 
 - name: grafana - open port 3000
   firewalld:
@@ -42,7 +42,7 @@
     permanent: true
     immediate: true
     state: enabled
-  when: grafana_firewalld
+  when: grafana_firewalld | bool
 
 - name: grafana - check if eonweb
   stat: path=/srv/eyesofnetwork/eonweb
