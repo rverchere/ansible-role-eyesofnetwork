@@ -24,7 +24,7 @@
 
 - name: eonapi - set eon_api_token variable
   set_fact:
-    eon_api_token: "{ request_key.json.EONAPI_KEY }}"
+    eon_api_token: "{{ request_key.json.EONAPI_KEY }}"
 
 - debug:
     msg: "EONAPI KEY for user {{ eon_user }} on host {{ eon_ip_address }}: {{ validate.json.status }}"
