@@ -1,0 +1,31 @@
+# retreive api key from user / password
+
+---
+- name: eonapi - get api key
+  uri:
+    url: "https://{{ eon_ip_address }}/eonapi/getApiKey?&username={{ eon_user }}&password={{ eon_password }}"
+    body_format: json
+    validate_certs: no
+    headers:
+      Content-Type: "application/json"
+  register: request_key
+  ignore_errors: yes
+
+- name: eonapi - test api authentification
+  uri:
+    url: "https://{{ eon_ip_address }}/eonapi/getAuthenticationStatus?&username={{ eon_user }}&apiKey={{ request_key.json.EONAPI_KEY }}"
+    body_format: json
+    validate_certs: no
+    headers:
+      Content-Type: "application/json"
+  register: validate
+  ignore_errors: yes
+  when: request_key is succeeded
+
+- name: eonapi - set eon_api_token variable
+  set_fact:
+    eon_api_token: "{ request_key.json.EONAPI_KEY }}"
+
+- debug:
+    msg: "EONAPI KEY for user {{ eon_user }} on host {{ eon_ip_address }}: {{ validate.json.status }}"
+  when: request_key is succeeded
