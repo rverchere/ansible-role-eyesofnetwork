@@ -13,6 +13,7 @@
     return_content: yes
     validate_certs: no
   ignore_errors: True
+  changed_when: True
 
 - name: restart grafana
   become: true
