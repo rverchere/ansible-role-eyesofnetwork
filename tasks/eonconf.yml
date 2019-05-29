@@ -1,0 +1,121 @@
+---
+# Install packages
+- name: eonconf - install packages
+  yum:
+    name: "{{ eon_eonconf_packages }}"
+    state: latest
+
+# Configure system
+- name: eonconf - set issue
+  template:
+    src: "eonconf/issue.j2"
+    dest: "/etc/issue"
+
+- name: eonconf - disable selinux
+  selinux:
+    state: disabled
+
+- name: eonconf - set timezone
+  timezone:
+    name: "{{eon_timezone}}"
+
+- name: eonconf - configure sudoers
+  lineinfile:
+    path: /etc/sudoers
+    regexp: "{{item.regexp}}"
+    line: "{{item.line}}"
+  with_items: "{{eon_sudoers}}"
+
+- name: eonconf - configure snmptrapd
+  template:
+    src: "eonconf/snmptrapd.conf.j2"
+    dest: "/etc/snmp/snmptrapd.conf"
+  notify: restart snmptrapd
+
+- name: eonconf - add apache user into eyesofnetwork group
+  user:
+    name: apache
+    groups: apache,eyesofnetwork
+    append: yes
+
+# Configure services
+- name: eonconf - enable services
+  systemd:
+    name: "{{item}}"
+    state: started
+    enabled: yes
+  with_items: "{{eon_services_enabled}}"
+
+- name: eonconf - disable services
+  systemd:
+    name: "{{item}}"
+    state: stopped
+    enabled: no
+  with_items: "{{eon_services_disabled}}"
+
+# Check existing directories
+- name: eonconf - check eonweb directory
+  stat:
+    path: "{{eon_path_eonweb}}"
+  register: st_eonweb
+
+- name: eonconf - check glpi directory 
+  stat:
+    path: "{{eon_path_glpi}}"
+  register: st_glpi
+
+- name: eonconf - check ocs directory
+  stat:
+    path: "{{eon_path_ocs}}"
+  register: st_ocs
+
+# Configure httpd
+- name: eonconf - httpd configuration
+  template:
+    src: "eonconf/httpd.conf.j2"
+    dest: "/etc/httpd/conf/httpd.conf"
+  notify: restart httpd
+
+# Configure php.ini
+- name: eonconf - configure php.ini
+  lineinfile:
+    path: "/etc/php.ini"
+    regexp: "{{item.regexp}}"
+    line: "{{item.line}}"
+  with_items: "{{eon_php_ini}}"
+  notify: restart httpd
+
+# Configure mariadb
+- name: eonconf - set mariadb root password
+  mysql_user: 
+    name: root
+    password: "{{eon_mariadb_passwd}}"
+    login_user: root
+    login_password: "{{eon_mariadb_oldpasswd}}"
+  when: eon_firstboot
+  ignore_errors: yes
+
+- name: eonconf - check mariadb timezones
+  command: mysql --password={{eon_mariadb_passwd}} -NBe "SELECT COUNT(*) FROM mysql.time_zone"
+  register: mysql_timezones_count
+  changed_when: false
+  check_mode: no
+
+- name: eonconf - ensure mariadb timezone data is imported
+  shell: "mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql --password={{eon_mariadb_passwd}} mysql"
+  when: mysql_timezones_count.stdout|int < 1
+  notify:
+    - restart mariadb
+
+# Configure repos
+- name: eonconf - create local repos
+  file:
+    path: "{{eon_path_repos}}/{{item}}"
+    state: directory
+  with_items: "{{eon_repos}}"
+
+- name: eonconf - update local repos
+  command: createrepo --update "{{eon_path_repos}}/{{item}}"
+  changed_when: false
+  check_mode: no
+  with_items: "{{eon_repos}}"

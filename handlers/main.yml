@@ -13,7 +13,8 @@
     return_content: yes
     validate_certs: no
   ignore_errors: True
-    
+  changed_when: True
+
 - name: restart grafana
   become: true
   service:
@@ -26,6 +27,12 @@
     name: httpd
     state: reloaded
 
+- name: restart httpd
+  become: true
+  service:
+    name: httpd
+    state: restarted
+
 - name: restart influxdb
   become: true
   service:
@@ -36,6 +43,18 @@
   become: true
   service:
     name: nagflux
+    state: restarted
+
+- name: restart mariadb
+  become: true
+  service:
+    name: mariadb
+    state: restarted
+
+- name: restart snmptrapd
+  become: true
+  service:
+    name: snmptrapd
     state: restarted
 
 - name: reload systemd daemon

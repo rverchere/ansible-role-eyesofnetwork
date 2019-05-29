@@ -5,6 +5,9 @@
 
 eon_version: 5
 eon_release: 2
+eon_surname: Laura
+
+eon_timezone: "Europe/Paris"
 
 eon_packages:
   - epel-release
@@ -12,10 +15,67 @@ eon_packages:
   - https://labs.consol.de/repo/stable/rhel7/i386/labs-consol-stable.rhel7.noarch.rpm
   - https://rpm.ocsinventory-ng.org/ocsinventory-release-latest.el7.ocs.noarch.rpm
 
+eon_user: admin
+eon_password: admin
+
 eon_api_url: https://{{ ansible_host }}/eonapi
-eon_api_user: admin
+eon_api_user: "{{ eon_user }}"
 eon_api_token: 0e6ed5c0a92adebbcc2a2903dc2c41a6820314d72775b312c94b5d14e9752f5b
 eon_api_job_name: nagios
+
+# --- eonconf
+
+eon_firstboot: true
+
+eon_mariadb_passwd: root66
+eon_mariadb_oldpasswd: ""
+eon_mariadb_ged_passwd: whaza
+
+eon_eonconf_packages:
+  - MySQL-python
+
+eon_repos:
+  - base
+  - extras
+  - updates
+
+eon_services_enabled:
+  - chronyd
+  - gedd
+  - httpd
+  - mariadb
+  - nagios
+  - rsyslog
+  - snmpd
+  - snmptrapd
+  - snmptt
+
+eon_services_disabled:
+  - firewalld
+
+eon_snmptrapd_community: EyesOfNetwork
+
+eon_path: "/srv/eyesofnetwork"
+eon_path_eonconf: "{{eon_path}}conf"
+eon_path_repos: "{{eon_path}}repo"
+eon_path_eonweb: "{{eon_path}}/eonweb"
+eon_path_ged: "{{eon_path}}/ged"
+eon_path_glpi: "{{eon_path}}/glpi"
+eon_path_ocs: "{{eon_path}}/ocsinventory-reports"
+
+eon_php_ini:
+  - regexp: "^date.timezone ="
+    line: "date.timezone = \"{{eon_timezone}}\""
+  - regexp: "^max_execution_time ="
+    line: "max_execution_time = 300"
+  - regexp: "^memory_limit ="
+    line: "memory_limit = 256M"
+  - regexp: "^error_reporting ="
+    line: "error_reporting = E_ERROR"
+
+eon_sudoers:
+  - regexp: "^apache ALL=NOPASSWD"
+    line: "apache ALL=NOPASSWD:/bin/systemctl * snmptt,/bin/systemctl * snmptrapd,/bin/systemctl * snmpd,/bin/systemctl * nagios,/bin/systemctl * gedd,/usr/bin/nmap"
 
 # --- grafana
 
@@ -47,6 +107,20 @@ influxdb_packages:
   - which
 influxdb_url: http://localhost:8086
 influxdb_backup_dir: /var/archives/influxdb/
+
+# --- linotp
+
+linotp_version: "1.1-1"
+linotp_packages:
+  - LinOTP
+  - LinOTP_apache
+  - LinOTP_mariadb
+linotp_hostname: "linotp.axians.local"
+linotp_config: "/etc/linotp2/linotp.ini"
+linotp_enckey: "/etc/linotp2/encKey"
+linotp_database: linotp
+linotp_db_user: linotp 
+linotp_db_pass: linotp66
 
 # --- mod_gearman
 
