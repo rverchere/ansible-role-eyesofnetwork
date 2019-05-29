@@ -9,7 +9,10 @@
     headers:
       Content-Type: "application/json"
   register: request_key
+  until: request_key.status == 200
   ignore_errors: yes
+  retries: 30
+  delay: 5
 
 - name: eonapi - test api authentification
   uri:
@@ -25,6 +28,7 @@
 - name: eonapi - set eon_api_token variable
   set_fact:
     eon_api_token: "{{ request_key.json.EONAPI_KEY }}"
+  when: request_key is succeeded
 
 - debug:
     msg: "EONAPI KEY for user {{ eon_user }} on host {{ eon_ip_address }}: {{ validate.json.status }}"
