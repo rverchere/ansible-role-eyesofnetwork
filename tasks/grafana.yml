@@ -69,6 +69,7 @@
       - { section: auth.proxy, option: whitelist, value: "" }
       - { section: auth.anonymous, option: enabled, value: "true" }
       - { section: auth.anonymous, option: org_role, value: "Viewer" }
+      - { section: security, option: allow_embedding, value: "true" }
     notify: restart grafana
 
   - name: grafana - apache configuration
