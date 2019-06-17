@@ -93,9 +93,6 @@
       state: present
     notify: restart grafana
 
-  - name: grafana - force restart
-    meta: flush_handlers
-
   - name: grafana - add thruk datasource
     grafana_datasource:
       name: "Thruk"
@@ -110,3 +107,6 @@
     when: "ansible_version.full is version_compare('2.10', '>=')" # for future use
 
   when: check_eonweb.stat.exists == True
+
+- name: grafana - force restart # Restart grafana service now!
+  meta: flush_handlers
