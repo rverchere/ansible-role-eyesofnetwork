@@ -21,6 +21,10 @@
     dest: "{{ histou_dir }}/"
     owner: false
     group: false
+  # https://github.com/ansible/ansible/issues/56629
+  vars:
+    ansible_ssh_pass: ''
+    ansible_password: ''
 
 - name: histou - copy configuration file
   copy:
