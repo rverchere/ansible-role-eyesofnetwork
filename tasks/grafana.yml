@@ -107,5 +107,6 @@
       state: present
     notify: restart grafana
     ignore_errors: true
+    when: "ansible_version.full is version_compare('2.10', '>=')" # for future use
 
   when: check_eonweb.stat.exists == True
