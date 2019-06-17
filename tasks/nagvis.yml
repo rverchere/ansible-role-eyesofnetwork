@@ -7,20 +7,25 @@
     owner: nagios
     group: eyesofnetwork
     mode: '0775'
+    recurse: yes
 
 - name: nagvis - get version {{ nagvis_version }}
   unarchive:
     src: "https://github.com/NagVis/nagvis/archive/nagvis-{{ nagvis_version }}.tar.gz"
-    dest: "{{ nagvis_tmp_path }}"
+    dest: "/tmp"
     remote_src: yes
 
 - name: nagvis - sync files with upstream
   synchronize:
-    src: "{{ nagvis_tmp_path }}/"
+    src: "/tmp/nagvis-nagvis-{{ nagvis_version }}/"
     dest: "{{ nagvis_path }}/"
     owner: false
     group: false
   delegate_to: "{{ inventory_hostname }}"
+  # https://github.com/ansible/ansible/issues/56629
+  vars:
+    ansible_ssh_pass: ''
+    ansible_password: ''
 
 - name: nagvis - copy authentication file if not set
   copy:
@@ -28,7 +33,7 @@
     dest: "{{ nagvis_path }}/etc/auth.db"
     owner: nagios
     group: eyesofnetwork
-    mode: '0644'
+    mode: '0664'
     force: no
     backup: yes
 
