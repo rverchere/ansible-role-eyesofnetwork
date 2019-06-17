@@ -1,0 +1,51 @@
+---
+
+- name: nagvis - set directory
+  file:
+    path: "{{ nagvis_path }}"
+    state: directory
+    owner: nagios
+    group: eyesofnetwork
+    mode: g+w
+    recurse: yes
+
+- name: nagvis - get version {{ nagvis_version }}
+  unarchive:
+    src: "https://github.com/NagVis/nagvis/archive/nagvis-{{ nagvis_version }}.tar.gz"
+    dest : "{{ nagvis_tmp_path }}"
+    remote_src: yes
+
+- name: nagvis - sync files with upstream
+  synchronize:
+    src: "{{ nagvis_tmp_path }}/"
+    dest: "{{ nagvis_path }}/"
+    owner: false
+    group: false
+  delegate_to: "{{ inventory_hostname }}"
+
+- name: nagvis - copy authentication file if not set
+  copy:
+    src: "nagvis/auth.db"
+    dest: "{{ nagvis_path }}/etc/auth.db"
+    owner: nagios
+    group: eyesofnetwork
+    mode: '0644'
+    force: no
+    backup: yes
+
+- name: nagvis - configuration
+  template:
+    src: nagvis/nagvis.ini.php.j2
+    dest: "{{ nagvis_path }}/etc/nagvis.ini.php"
+    owner: nagios
+    group: eyesofnetwork
+    mode: '0644'
+
+  - name: nagvis - apache configuration
+  template:
+    src: nagvis/nagvis.conf.j2
+    dest: "/etc/httpd/conf.d/nagvis.conf"
+    owner: root
+    group: root
+    mode: '0644'
+  notify: reload httpd

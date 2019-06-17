@@ -92,7 +92,7 @@ grafana_admin_pass: admin
 
 # --- histou
 
-histou_dir: /srv/eyesofnetwork/histou
+histou_dir: "{{ eon_path }}/histou"
 histou_git: https://github.com/Griesbacher/histou.git
 histou_git_dir: /tmp/histou-git
 histou_thruk_template: /usr/share/thruk/themes/themes-available/EyesOfNetwork/templates
@@ -119,7 +119,7 @@ linotp_hostname: "linotp.axians.local"
 linotp_config: "/etc/linotp2/linotp.ini"
 linotp_enckey: "/etc/linotp2/encKey"
 linotp_database: linotp
-linotp_db_user: linotp 
+linotp_db_user: linotp
 linotp_db_pass: linotp66
 
 # --- mod_gearman
@@ -137,10 +137,20 @@ nagflux_packages:
   - perl-Cpanel-JSON-XS
   - perl-XML-LibXML
 nagflux_gopath: /tmp/gorepo
-nagflux_path: /srv/eyesofnetwork/nagflux
+nagflux_path: "{{ eon_path }}/nagflux"
 nagflux_git: github.com/griesbacher/nagflux
 nagflux_log: /var/log/nagios
 nagflux_mysql_user: root
 nagflux_mysql_pass: root66
 nagflux_perfdata: "{{nagflux_log}}/spool/nagfluxperfdata"
 nagflux_spool: /var/spool/nagflux
+
+# --- nagvis
+
+nagvis_path: "{{ eon_path }}/nagvis"
+nagvis_tmp_path: /tmp/nagvis
+nagvis_version: "1.9.12"
+
+# --- nagios
+nagios_path: "{{ eon_path }}/nagios"
+nagios_socket: "{{ nagios_path}}/var/log/rw/live"
