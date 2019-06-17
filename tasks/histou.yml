@@ -1,37 +1,4 @@
 ---
-- name: histou - clone project
-  become: false
-  local_action:
-    module: git
-    repo: "{{ histou_git }}"
-    dest: "{{ histou_git_dir }}"
-    update: yes
-    force: yes
-    accept_hostkey: yes
-  run_once: yes
-
-- name: histou - create directory
-  file:
-    path: "{{ histou_dir }}"
-    state: directory
-
-- name: histou - copy files
-  synchronize:
-    src: "{{ histou_git_dir }}/"
-    dest: "{{ histou_dir }}/"
-    owner: false
-    group: false
-
-- name: histou - copy configuration file
-  copy:
-    src: "{{ histou_git_dir }}/histou.ini.example"
-    dest: "{{ histou_dir }}/histou.ini"
-
-- name: histou - copy js file
-  copy:
-    src: "{{ histou_git_dir }}/histou.js"
-    dest: "{{ grafana_dir }}/histou.js"
-
 - name: histou - create thruk templates directory
   file:
     path: "{{histou_thruk_template}}"
@@ -44,11 +11,3 @@
   with_items:
     - { src: "histou.conf.j2", dest: "/etc/httpd/conf.d/histou.conf" }
     - { src: "_histou_graph.tt.j2", dest: "{{histou_thruk_template}}/_histou_graph.tt" }
-  notify: reload httpd
-
-- name: histou - configure influxdb url
-  ini_file:
-    path: "{{ histou_dir }}/histou.ini"
-    section: "influxdb"
-    option: "url"
-    value: '"{{influxdb_url}}/query?db=nagflux"'

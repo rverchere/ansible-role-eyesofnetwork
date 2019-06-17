@@ -7,20 +7,11 @@
   - "{{ nagflux_packages }}"
 
 - name: nagflux - create directories
-  file: 
-    path: "{{ item }}" 
+  file:
+    path: "{{ item }}"
     state: directory
   with_items:
     - "{{ nagflux_gopath }}"
-    - "{{ nagflux_path }}"
-    - "{{ nagflux_perfdata }}"
-    - "{{ nagflux_spool }}"
-
-- name: nagflux - set perfdata directory owners
-  file:
-    path: "{{ nagflux_perfdata }}"
-    owner: nagios
-    group: eyesofnetwork
 
 - name: nagflux - get go project
   shell: "go get -u {{ nagflux_git }}"
@@ -41,7 +32,6 @@
     mode: "{{ item.mode }}"
     remote_src: yes
   with_items:
-    - { src: "{{ nagflux_gopath }}/bin/nagflux", dest: "{{ nagflux_path }}", mode: 744 }
     - { src: "{{ nagflux_gopath }}/src/github.com/griesbacher/nagflux/nagflux.service", dest: "/usr/lib/systemd/system/nagflux.service", mode: 644 }
 
 - name: nagflux - configure nagflux service
@@ -54,47 +44,9 @@
 - name: nagflux - enable service
   systemd:
     name: nagflux.service
-    state: started
+    state: stopped
     enabled: yes
     daemon_reload: yes
-
-- name: nagflux - copy configuration
-  template:
-    src: nagflux/config.gcfg.j2
-    dest: "{{nagflux_path}}/config.gcfg"
-  notify: restart nagflux
-
-- name: nagflux - copy nagios configuration
-  template:
-    src: nagflux/nagflux.sql.j2
-    dest: "/tmp/nagflux.sql"
-
-- name: nagflux - copy pnp4nagios migrate script
-  template:
-    src: nagflux/migrate_pnp_to_nagflux.pl.j2
-    dest: "{{nagflux_path}}/migrate_pnp_to_nagflux.pl"
-    mode: 0744
-
-- name: nagflux - insert nagios configuration
-  mysql_db:
-    state: import
-    name: lilac
-    target: "/tmp/nagflux.sql"
-    login_user: "{{ nagflux_mysql_user }}"
-    login_password: "{{ nagflux_mysql_pass }}"
-  notify: export nagios
-
-- name: nagflux - create grafana datasource
-  grafana_datasource:
-    grafana_url: "{{ grafana_url }}"
-    grafana_user: "{{ grafana_admin_user }}"
-    grafana_password: "{{ grafana_admin_pass }}"
-    name: "nagflux"
-    url: "{{influxdb_url}}"
-    ds_type: "influxdb"
-    access: "proxy"
-    is_default: true
-    database: "nagflux"
 
 - name: nagflux - disable npcd
   systemd:

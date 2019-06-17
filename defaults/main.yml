@@ -107,6 +107,7 @@ influxdb_packages:
   - which
 influxdb_url: http://localhost:8086
 influxdb_backup_dir: /var/archives/influxdb/
+influxdb_dir: /srv/eyesofnetwork/influxdb/
 
 # --- linotp
 
@@ -139,7 +140,7 @@ nagflux_packages:
 nagflux_gopath: /tmp/gorepo
 nagflux_path: /srv/eyesofnetwork/nagflux
 nagflux_git: github.com/griesbacher/nagflux
-nagflux_log: /var/log/nagios
+nagflux_log: /srv/eyesofnetwork/nagios/var/log
 nagflux_mysql_user: root
 nagflux_mysql_pass: root66
 nagflux_perfdata: "{{nagflux_log}}/spool/nagfluxperfdata"

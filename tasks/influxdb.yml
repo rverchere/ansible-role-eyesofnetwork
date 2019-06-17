@@ -31,7 +31,6 @@
     - { section: http, option: bind-address, value: '"127.0.0.1:8086"' }
     - { section: http, option: log-enabled, value: "false" }
     - { section: logging, option: level, value: '"error"' }
-  notify: restart influxdb
 
 - name: influxdb - ensure backup folder exists
   file:
@@ -51,6 +50,6 @@
 - name: influxdb - enable service
   systemd:
     name: influxdb
-    state: started
+    state: stopped
     enabled: yes
     daemon_reload: yes
