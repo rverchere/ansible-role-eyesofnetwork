@@ -6,13 +6,12 @@
     state: directory
     owner: nagios
     group: eyesofnetwork
-    mode: g+w
-    recurse: yes
+    mode: '0775'
 
 - name: nagvis - get version {{ nagvis_version }}
   unarchive:
     src: "https://github.com/NagVis/nagvis/archive/nagvis-{{ nagvis_version }}.tar.gz"
-    dest : "{{ nagvis_tmp_path }}"
+    dest: "{{ nagvis_tmp_path }}"
     remote_src: yes
 
 - name: nagvis - sync files with upstream
@@ -41,7 +40,7 @@
     group: eyesofnetwork
     mode: '0644'
 
-  - name: nagvis - apache configuration
+- name: nagvis - apache configuration
   template:
     src: nagvis/nagvis.conf.j2
     dest: "/etc/httpd/conf.d/nagvis.conf"
