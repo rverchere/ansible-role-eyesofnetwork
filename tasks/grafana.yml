@@ -70,6 +70,7 @@
       - { section: auth.anonymous, option: enabled, value: "true" }
       - { section: auth.anonymous, option: org_role, value: "Viewer" }
       - { section: security, option: allow_embedding, value: "true" }
+      - { section: alerting, option: enabled, value, "false" }
     notify: restart grafana
 
   - name: grafana - apache configuration
