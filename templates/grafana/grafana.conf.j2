@@ -20,6 +20,7 @@
     AuthEonSessionCookies On
     Require valid-user
     Require ip 127.0.0.1 {{ ansible_default_ipv4.address }}
+    Satisfy Any
 
     ProxyPass {{grafana_url}} retry=0 disablereuse=On
     ProxyPassReverse {{grafana_url}}/grafana
