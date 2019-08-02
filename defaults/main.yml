@@ -127,6 +127,7 @@ linotp_db_pass: linotp66
 mod_gearman_broker: /usr/lib64/mod_gearman/mod_gearman_nagios4.o config=/etc/mod_gearman/module.conf
 mod_gearman_key: should_be_changed
 mod_gearman_key_path: /etc/mod_gearman/secret
+mod_gearman_hostgroups_queues: name1
 
 # --- nagflux
 
