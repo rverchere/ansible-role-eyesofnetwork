@@ -10,7 +10,7 @@
   yum:
     name: "{{ item }}"
     state: latest
-  with_items:
+  loop:
     - epel-release
     - https://download.eyesofnetwork.com/repos/{{eon_version}}/base/eyesofnetwork-release-{{eon_version}}-{{eon_release}}.noarch.rpm
     - https://labs.consol.de/repo/stable/rhel7/i386/labs-consol-stable.rhel7.noarch.rpm
@@ -20,7 +20,7 @@
   yum:
     name: "{{ item }}"
     state: latest
-  with_items:
+  loop:
     - nagios-plugins-all
     - nagios-plugins-eon
     - perl-Nagios-Plugin
@@ -31,7 +31,7 @@
   yum:
     name: "{{ item }}"
     state: latest
-  with_items:
+  loop:
     - gearmand
     - gearmand-server
     - mod_gearman
@@ -67,6 +67,29 @@
     owner: root
     group: root
     mode: 0644
+
+- name: change user context execution for worker
+  ini_file:
+    path: "/usr/lib/systemd/system/mod-gearman-worker.service"
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  loop:
+    - { section: "Service", option: "User", value: "nagios" }
+    - { section: "Service", option: "Group", value: "eyesofnetwork" }
+  notify: reload systemd daemon
+
+- name: Systemd reload now
+  meta: flush_handlers
+
+- name: change permission for worker on directory
+  file:
+    owner: "nagios"
+    path: "{{ item }}"
+    recurse: yes
+  loop:
+    - /var/mod_gearman
+    - /var/log/mod_gearman
 
 - name: restart mod-gearman-worker on each nodes
   service:
