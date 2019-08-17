@@ -18,7 +18,7 @@ eon_packages:
 eon_user: admin
 eon_password: admin
 
-eon_api_url: https://{{ ansible_host }}/eonapi
+eon_api_url: https://{{ eon_ip_address | default (ansible_default_ipv4.address) }}/eonapi
 eon_api_user: "{{ eon_user }}"
 eon_api_token: 0e6ed5c0a92adebbcc2a2903dc2c41a6820314d72775b312c94b5d14e9752f5b
 eon_api_job_name: nagios
