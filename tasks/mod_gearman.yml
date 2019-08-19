@@ -118,7 +118,7 @@
 
 - name: use eonapi to add broker
   uri:
-    url: "{{eon_api_url}}/addEventBroker?username={{eon_api_user}}&apiKey={{eon_api_token}}"
+    url: "{{ eon_api_url }}/addEventBroker?username={{ eon_api_user }}&apiKey={{ eon_api_token }}"
     method: POST
     headers:
       Content-Type: "application/json"
