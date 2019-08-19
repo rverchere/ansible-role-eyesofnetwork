@@ -68,6 +68,18 @@
     group: root
     mode: 0644
 
+- name: create eyesofnetwork group on worker
+  group:
+    name: eyesofnetwork
+    state: present
+  when: "'mod_gearman_worker' in group_names"
+
+- name: add user nagios to eyesofnetwork group on worker
+  user:
+    name: nagios
+    groups: eyesofnetwork
+  when: "'mod_gearman_worker' in group_names"
+
 - name: change user context execution for worker
   ini_file:
     path: "/usr/lib/systemd/system/mod-gearman-worker.service"
