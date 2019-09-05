@@ -14,6 +14,6 @@ Alias /histou "{{histou_dir}}"
         AuthEonPageLogin /login.php
         AuthEonSessionCookies On
         Require valid-user
-        Require ip 127.0.0.1 {{ ansible_default_ipv4.address }}
+        Require local
 	Satisfy Any
 </Directory>
