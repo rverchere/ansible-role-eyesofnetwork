@@ -95,6 +95,7 @@ grafana_admin_pass: admin
 histou_dir: /srv/eyesofnetwork/histou
 histou_git: https://github.com/Griesbacher/histou.git
 histou_git_dir: /tmp/histou-git
+histou_tgz: "{{ role_path }}/files/histou-0.4.3.tar.gz"
 histou_thruk_template: /usr/share/thruk/themes/themes-available/EyesOfNetwork/templates
 
 # --- influxdb

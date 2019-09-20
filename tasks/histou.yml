@@ -1,4 +1,11 @@
 ---
+- name: histou - checking ressource access
+  become: false
+  uri:
+    url: "{{ histou_git }}"
+  register: histou_http_response
+  ignore_errors: true
+
 - name: histou - clone project
   become: false
   local_action:
@@ -9,11 +16,24 @@
     force: yes
     accept_hostkey: yes
   run_once: yes
+  when: histou_http_response.status == 200
 
 - name: histou - create directory
   file:
     path: "{{ histou_dir }}"
     state: directory
+
+- name: histou - create git directory
+  file:
+    path: "{{ histou_git_dir }}"
+    state: directory
+
+- name: histou - Using local project
+  unarchive:
+    extra_opts: ['--strip-components=1', '--show-stored-names']
+    src: "{{ histou_tgz }}"
+    dest: "{{ histou_dir }}"
+  when: histou_http_response.status != 200
 
 - name: histou - copy files
   synchronize:
@@ -21,16 +41,21 @@
     dest: "{{ histou_dir }}/"
     owner: false
     group: false
+  when: histou_http_response.status == 200
 
 - name: histou - copy configuration file
   copy:
     src: "{{ histou_git_dir }}/histou.ini.example"
     dest: "{{ histou_dir }}/histou.ini"
+  when: histou_http_response.status == 200
+
 
 - name: histou - copy js file
   copy:
     src: "{{ histou_git_dir }}/histou.js"
     dest: "{{ grafana_dir }}/histou.js"
+  when: histou_http_response.status == 200
+
 
 - name: histou - create thruk templates directory
   file:
