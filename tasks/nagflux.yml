@@ -1,10 +1,35 @@
 ---
+- name: nagflux - checking ressource access
+  become: false
+  uri:
+    url: "{{ nagflux_git }}"
+  register: nagflux_http_response
+  ignore_errors: true
+
 - name: nagflux - install dependencies
   package:
     name: "{{ item }}"
     state: latest
   with_items:
   - "{{ nagflux_packages }}"
+  when: nagflux_http_response.status == 200
+
+- name: nagflux - Find all rpm files 
+  find:
+    paths: "{{ role_path }}/files/packages/nagflux/"
+    patterns: "*.rpm"
+  register: rpm_files
+  when: nagflux_http_response.status != 200
+
+- set_fact:
+    rpm_list: "{{ rpm_files.files | map(attribute='path') | list}}"
+  when: nagflux_http_response.status != 200
+
+- name: nagflux - installing the rpm files
+  yum:
+    name: "{{rpm_list}}"
+    state: present
+  when: nagflux_http_response.status != 200
 
 - name: nagflux - create directories
   file: 
@@ -22,14 +47,28 @@
     owner: nagios
     group: eyesofnetwork
 
+- name: nagflux - directory
+  file:
+    path: "{{ nagflux_gopath }}/src/{{ nagflux_git_dir }}"
+    state: directory
+    mode: '0755'
+  when: nagflux_http_response.status != 200
+
+- name: nagflux - Extract nagflux.tgz
+  unarchive:
+    src: "{{ nagflux_tgz }}"
+    dest: "{{ nagflux_gopath }}/src/{{ nagflux_git_dir }}"
+  when: nagflux_http_response.status != 200
+
 - name: nagflux - get go project
-  shell: "go get -u {{ nagflux_git }}"
+  shell: "go get -u {{ nagflux_git_dir }}"
   environment:
     GOPATH: "{{ nagflux_gopath }}"
   changed_when: false
+  when: nagflux_http_response.status == 200
 
 - name: nagflux - build go project
-  shell: "go build {{ nagflux_git }}"
+  shell: "go build {{ nagflux_git_dir }}"
   environment:
     GOPATH: "{{ nagflux_gopath }}"
   changed_when: false
@@ -41,7 +80,6 @@
     mode: "{{ item.mode }}"
     remote_src: yes
   with_items:
-    - { src: "{{ nagflux_gopath }}/bin/nagflux", dest: "{{ nagflux_path }}", mode: 744 }
     - { src: "{{ nagflux_gopath }}/src/github.com/griesbacher/nagflux/nagflux.service", dest: "/usr/lib/systemd/system/nagflux.service", mode: 644 }
 
 - name: nagflux - configure nagflux service

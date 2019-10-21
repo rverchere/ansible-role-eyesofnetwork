@@ -1,10 +1,31 @@
 ---
+- name: grafana - checking ressource access
+  become: false
+  uri:
+    url: "{{ grafana_repo_key }}"
+  register: grafana_http_response
+  ignore_errors: true
+
 - name: grafana - remove conflicting packages
   package:
     name: grafana-data
     state: absent
   register: _old_grafana_pkgs
 
+- command: rpm --import "{{ grafana_local_key }}"
+  args:
+    warn: false
+  register: rpm_install
+  failed_when: rpm_install.rc != 0 and "is already installed" not in rpm_install.stderr
+  changed_when: rpm_install.rc == 0
+  when: grafana_http_response.status != 200
+
+- name: install grafana rpm from a local file
+  yum:
+    name: "{{ grafana_rpm }}"
+    state: present
+  when: grafana_http_response.status != 200
+  
 - name: grafana - add repository
   yum_repository:
     name: grafana
@@ -12,6 +33,7 @@
     baseurl: "{{ grafana_repo }}"
     gpgcheck: yes
     gpgkey: "{{ grafana_repo_key }}"
+  when: grafana_http_response.status == 200
 
 - name: grafana - install packages
   package:
@@ -21,6 +43,7 @@
   until: _install_packages is succeeded
   retries: 5
   delay: 2
+  when: grafana_http_response.status == 200
 
 - name: grafana - enable service
   systemd:
@@ -87,6 +110,12 @@
       - { src: custom.menus.json.j2, dest: /srv/eyesofnetwork/eonweb/include/languages/custom.menus.json }
       - { src: custom.messages.json.j2, dest: /srv/eyesofnetwork/eonweb/include/languages/custom.messages.json }
       - { src: custom.messages-fr.json.j2, dest: /srv/eyesofnetwork/eonweb/include/languages/custom.messages-fr.json }
+
+  - name: grafana - Extract grafana-thruk-datasource-master.zip
+    unarchive:
+      src: "{{ grafana_thruk_zip }}"
+      dest: "/var/lib/grafana/plugins/"
+    when: grafana_http_response.status != 200
 
   - name: grafana - add thruk datasource plugin
     grafana_plugin:

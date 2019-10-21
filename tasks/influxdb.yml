@@ -1,4 +1,11 @@
 ---
+- name: influxdb - checking ressource access
+  become: false
+  uri:
+    url: "{{ influxdb_repo_key }}"
+  register: influxdb_http_response
+  ignore_errors: true
+
 - name: influxdb - add repository
   yum_repository:
     name: influxdb
@@ -6,11 +13,27 @@
     baseurl: "{{ influxdb_repo }}"
     gpgcheck: yes
     gpgkey: "{{ influxdb_repo_key }}"
+  when: influxdb_http_response.status == 200
+
+- command: rpm --import "{{ influxdb_local_key }}"
+  args:
+    warn: false
+  register: rpm_install
+  failed_when: rpm_install.rc != 0 and "is already installed" not in rpm_install.stderr
+  changed_when: rpm_install.rc == 0
+  when: influxdb_http_response.status != 200
+
+- name: install influxdb rpm from a local file
+  yum:
+    name: "{{ influxdb_rpm }}"
+    state: present
+  when: influxdb_http_response.status != 200
 
 - name: influxdb - import rpm key
   rpm_key:
     key: "{{ influxdb_repo_key }}"
     state: present
+  when: influxdb_http_response.status == 200
 
 - name: influxdb - install packages
   package:
@@ -20,6 +43,7 @@
   - "{{ influxdb_packages }}"
   retries: 5
   delay: 2
+  when: influxdb_http_response.status == 200
 
 - name: influxdb - modify configuration
   ini_file:

@@ -1,20 +1,51 @@
 ---
 # task install
 
+- name: eon - checking ressource access
+  become: false
+  uri:
+    url: "https://labs.consol.drftygde/repo/stable/rhel7/i386/labs-consol-stable.rhel7.noarch.rpm"
+  register: eon_http_response
+  ignore_errors: true
+
 - name: disable selinux
   selinux:
     state: disabled
+
+- name: installing repos files
+  command: yum localinstall -y "{{ eon_packages_epel }}" "{{ eon_packages_eyesofnetwork }}" "{{ eon_packages_labs }}" "{{ eon_packages_ocsinventory }}"
+  when: eon_http_response.status != 200
+
+- name: eon - Find all rpm files 
+  find:
+    paths: "{{ role_path }}/files/packages/eon/"
+    patterns: "*.rpm"
+  register: rpm_files
+  when: eon_http_response.status != 200
+
+- set_fact:
+    rpm_list: "{{ rpm_files.files | map(attribute='path') | list}}"
+  when: eon_http_response.status != 200
+
+- name: eon - installing the rpm files
+  yum:
+    name: "{{ rpm_list }}"
+    state: installed
+  when: eon_http_response.status != 200
 
 - name: install all repos
   yum:
     name: "{{ eon_packages }}"
     state: latest
+  when: eon_http_response.status == 200
+
 
 - name: install the latest 'eyesofnetwork-release' package
   yum:
     name: "eyesofnetwork-release"
     state: latest
     update_cache: yes
+  when: eon_http_response.status == 200
 
 - name: install the 'EyesOfNetwork Monitoring' package group
   yum:
@@ -23,6 +54,7 @@
     enablerepo: eon-base
     update_cache: yes
     exclude: php-mysql
+  when: eon_http_response.status == 200
 
 - name: check if eon repo exists
   stat: path=/srv/eyesofnetworkrepo

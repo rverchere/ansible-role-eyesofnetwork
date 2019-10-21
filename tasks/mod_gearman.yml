@@ -6,15 +6,56 @@
     state: disabled
   when: "'mod_gearman_worker' in group_names"
 
+- name: mod_gearman - checking ressource access
+  become: false
+  uri:
+    url: "https://labs.consol.de/repo/stable/rhel7/i386/labs-consol-stable.rhel7.noarch.rpm"
+  register: gearman_http_response
+  ignore_errors: true
+
+
+
+- name: install the 'mod_gearman_worker' repos offline
+  yum: 
+    name : "{{ mod_gearman_packages }}" 
+    state: present   
+  when: "'mod_gearman_worker' in group_names"
+  when: gearman_http_response.status != 200  
+  ignore_errors : true
+
+
+
+- name: install the gearman rpm  offline
+  command:  "rpm -i {{role_path}}/files/packages/GEARMAN2/*"  
+  when: "'mod_gearman_worker' in group_names"
+  when: gearman_http_response.status != 200
+  ignore_errors: true
+  
+
+- name: install the nagios rpm  offline
+  command:  "rpm -i {{ role_path }}/files/packages/nagios/*"  
+  when: "'mod_gearman_worker' in group_names"
+  when: gearman_http_response.status != 200 
+  ignore_errors: true
+
+
+- name: install the perl rpm  offline
+  command:  "rpm -i {{ role_path }}/files/packages/perl/*"  
+  when: "'mod_gearman_worker' in group_names"
+  when: gearman_http_response.status != 200   
+  ignore_errors: true
+
 - name: install the 'mod_gearman_worker' repos
   yum:
     name: "{{ item }}"
-    state: latest
+    state: installed
   loop:
     - epel-release
     - https://download.eyesofnetwork.com/repos/{{eon_version}}/base/eyesofnetwork-release-{{eon_version}}-{{eon_release}}.noarch.rpm
     - https://labs.consol.de/repo/stable/rhel7/i386/labs-consol-stable.rhel7.noarch.rpm
   when: "'mod_gearman_worker' in group_names"
+  when: gearman_http_response.status == 200
+
 
 - name: install the 'mod_gearman_worker' packages
   yum:
@@ -26,6 +67,7 @@
     - perl-Nagios-Plugin
     - perl-Net-SNMP
   when: "'mod_gearman_worker' in group_names"
+  when: gearman_http_response.status == 200
 
 - name: install 'mod_gearman' packages
   yum:
@@ -35,6 +77,8 @@
     - gearmand
     - gearmand-server
     - mod_gearman
+  when: gearman_http_response.status == 200 
+
 
 - name: disable gearmand-server on worker
   service:
@@ -140,6 +184,7 @@
     validate_certs: no
   register: return
   when: "'mod_gearman_server' in group_names"
+  ignore_errors : true
 
 - name : display result
   debug:

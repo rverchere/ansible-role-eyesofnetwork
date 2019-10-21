@@ -1,15 +1,33 @@
 ---
 # add linotp for eyesofnetwork
 
+- name: linotp - checking ressource access
+  become: false
+  uri:
+    url: "https://linotp.org/rpm/el7/linotp/x86_64/Packages/LinOTP_repos-{{linotp_version}}.el7.x86_64.rpm"
+  register: linotp_http_response
+  ignore_errors: true
+
 - name: linotp - install repositories
   yum:
     name:  https://linotp.org/rpm/el7/linotp/x86_64/Packages/LinOTP_repos-{{linotp_version}}.el7.x86_64.rpm
     state: present
+    when: linotp_http_response.status == 200 
 
 - name: linotp - install packages
   yum:
     name: "{{linotp_packages}}"
     state: latest
+    when: linotp_http_response.status == 200 
+
+
+- name: linotp - install repositories offline
+    yum: 
+      name : "{{linotp_packages_offline}}"
+      state: present
+    when: linotp_http_response.status != 200 
+
+
 
 - name: linotp - check encryption key
   stat:

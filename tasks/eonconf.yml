@@ -1,9 +1,24 @@
 ---
+- name: eonconf - checking ressource access
+  become: false
+  uri:
+    url: "https://labs.consol.de/repo/stable/rhel7/i386/labs-consol-stable.rhel7.noarch.rpm"
+  register: eonconf_http_response
+  ignore_errors: true
+
 # Install packages
 - name: eonconf - install packages
   yum:
     name: "{{ eon_eonconf_packages }}"
     state: latest
+    when: eonconf_http_response.status == 200 
+
+# Install packages offline
+- name: eonconf - install packages offline
+  yum:
+    name: "{{eon_eonconf_packages_offline}}"
+    state: present
+    when: eonconf_http_response.status != 200 
 
 # Configure system
 - name: eonconf - set issue

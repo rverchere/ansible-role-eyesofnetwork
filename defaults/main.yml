@@ -15,6 +15,11 @@ eon_packages:
   - https://labs.consol.de/repo/stable/rhel7/i386/labs-consol-stable.rhel7.noarch.rpm
   - https://rpm.ocsinventory-ng.org/ocsinventory-release-latest.el7.ocs.noarch.rpm
 
+eon_packages_epel: "{{role_path}}/files/packages/eon/repos/epel-release-7-11.noarch.rpm"
+eon_packages_eyesofnetwork: "{{role_path}}/files/packages/eon/repos/eyesofnetwork-release-5-2.1.noarch.rpm"
+eon_packages_labs: "{{role_path}}/files/packages/eon/repos/labs-consol-stable.rhel7.noarch.rpm"
+eon_packages_ocsinventory: "{{role_path}}/files/packages/eon/repos/ocsinventory-release-latest.el7.ocs.noarch.rpm"
+
 eon_user: admin
 eon_password: admin
 
@@ -33,6 +38,12 @@ eon_mariadb_ged_passwd: whaza
 
 eon_eonconf_packages:
   - MySQL-python
+
+eon_eonconf_packages_offline :
+  - "{{ role_path }}/files/packages/eonconf/mariadb-libs-5.5.64-1.el7.x86_64.rpm"
+  - "{{ role_path }}/files/packages/eonconf/mariadb-5.5.64-1.el7.x86_64.rpm"
+  - "{{ role_path }}/files/packages/eonconf/python-2.7.5-86.el7.x86_64.rpm"
+  - "{{ role_path }}/files/packages/eonconf/python-libs-2.7.5-86.el7.x86_64.rpm"
 
 eon_repos:
   - base
@@ -83,6 +94,9 @@ grafana_config: /etc/grafana/grafana.ini
 grafana_dir: /usr/share/grafana/public/dashboards/
 grafana_repo: https://packages.grafana.com/oss/rpm
 grafana_repo_key: https://packages.grafana.com/gpg.key
+grafana_local_key: "{{ role_path }}/files/packages/grafana/gpg.key"
+grafana_rpm: "{{ role_path }}/files/packages/grafana/grafana-6.4.2-1.x86_64.rpm"
+grafana_thruk_zip: "{{ role_path }}/files/grafana-thruk-datasource-master.zip"
 grafana_version: latest
 grafana_package: "grafana{{ (grafana_version != 'latest') | ternary('-' ~ grafana_version, '') }}"
 grafana_firewalld: true
@@ -103,6 +117,8 @@ histou_thruk_template: /usr/share/thruk/themes/themes-available/EyesOfNetwork/te
 influxdb_config: /etc/influxdb/influxdb.conf
 influxdb_repo: https://repos.influxdata.com/centos/$releasever/$basearch/stable/
 influxdb_repo_key: https://repos.influxdata.com/influxdb.key
+influxdb_local_key: "{{ role_path }}/files/packages/influxdb/influxdb.key"
+influxdb_rpm: "{{ role_path }}/files/packages/influxdb/influxdb-1.7.8.x86_64.rpm"
 influxdb_packages:
   - influxdb
   - which
@@ -116,6 +132,11 @@ linotp_packages:
   - LinOTP
   - LinOTP_apache
   - LinOTP_mariadb
+linotp_packages_offline:
+  - "{{ role_path }}/files/packages/LinOTP/LinOTP-2.8-1.el7.centos.x86_64.rpm"
+  - "{{ role_path }}/files/packages/LinOTP/LinOTP_repos-1.1-1.el7.x86_64.rpm"
+  - "{{ role_path }}/files/packages/LinOTP/LinOTP_apache-2.9.3-1.el7.x86_64.rpm"
+  - "{{ role_path }}/files/packages/LinOTP/LinOTP_mariadb-3-1.el7.x86_64.rpm"
 linotp_hostname: "linotp.axians.local"
 linotp_config: "/etc/linotp2/linotp.ini"
 linotp_enckey: "/etc/linotp2/encKey"
@@ -128,7 +149,11 @@ linotp_db_pass: linotp66
 mod_gearman_broker: /usr/lib64/mod_gearman/mod_gearman_nagios4.o config=/etc/mod_gearman/module.conf
 mod_gearman_key: should_be_changed
 mod_gearman_key_path: /etc/mod_gearman/secret
-mod_gearman_hostgroups_queues: name1
+mod_gearman_hostgroups_queues: name1  
+mod_gearman_packages:
+- "{{ role_path }}/files/packages/eon/repos/epel-release-7-11.noarch.rpm"
+- "{{ role_path }}/files/packages/eon/repos/labs-consol-stable.rhel7.noarch.rpm"
+- "{{ role_path }}/files/packages/eon/repos/eyesofnetwork-release-5-2.1.noarch.rpm"
 
 # --- nagflux
 
@@ -140,7 +165,9 @@ nagflux_packages:
   - perl-XML-LibXML
 nagflux_gopath: /tmp/gorepo
 nagflux_path: /srv/eyesofnetwork/nagflux
-nagflux_git: github.com/griesbacher/nagflux
+nagflux_git: https://github.com/griesbacher/nagflux
+nagflux_git_dir: github.com/griesbacher/nagflux
+nagflux_tgz: "{{ role_path }}/files/nagflux.tar.gz"
 nagflux_log: /var/log/nagios
 nagflux_mysql_user: root
 nagflux_mysql_pass: root66
