@@ -58,46 +58,5 @@
     enabled: yes
     daemon_reload: yes
 
-- name: nagflux - copy configuration
-  template:
-    src: nagflux/config.gcfg.j2
-    dest: "{{nagflux_path}}/config.gcfg"
-  notify: restart nagflux
-
-- name: nagflux - copy nagios configuration
-  template:
-    src: nagflux/nagflux.sql.j2
-    dest: "/tmp/nagflux.sql"
-
-- name: nagflux - copy pnp4nagios migrate script
-  template:
-    src: nagflux/migrate_pnp_to_nagflux.pl.j2
-    dest: "{{nagflux_path}}/migrate_pnp_to_nagflux.pl"
-    mode: 0744
-
-- name: nagflux - insert nagios configuration
-  mysql_db:
-    state: import
-    name: lilac
-    target: "/tmp/nagflux.sql"
-    login_user: "{{ nagflux_mysql_user }}"
-    login_password: "{{ nagflux_mysql_pass }}"
-  notify: export nagios
-
-- name: nagflux - create grafana datasource
-  grafana_datasource:
-    grafana_url: "{{ grafana_url }}"
-    grafana_user: "{{ grafana_admin_user }}"
-    grafana_password: "{{ grafana_admin_pass }}"
-    name: "nagflux"
-    url: "{{influxdb_url}}"
-    ds_type: "influxdb"
-    access: "proxy"
-    is_default: true
-    database: "nagflux"
-
-- name: nagflux - disable npcd
-  systemd:
-    name: npcd
-    state: stopped
-    enabled: no
+- name: nagflux - include config tasks
+  include: configure_nagflux.yml
