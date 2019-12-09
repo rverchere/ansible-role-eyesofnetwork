@@ -138,14 +138,14 @@
     body_format: json
     return_content: yes
     validate_certs: no
-  register: return
+  register: returnapi
   when: "'mod_gearman_server' in group_names"
 
 - name : display result
   debug:
-    msg: "{{ return.content }}"
+    msg: "{{ returnapi.content }}"
   when: "'mod_gearman_server' in group_names"
 
 - name: Fail if ERROR in the page content
   fail:
-  when: "'mod_gearman_server' in group_names and 'ERROR' in return.content"
+  when: "'mod_gearman_server' in group_names and 'ERROR' in returnapi.content"
