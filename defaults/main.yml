@@ -14,6 +14,11 @@ eon_packages:
   - https://download.eyesofnetwork.com/repos/{{eon_version}}.{{eon_release}}/base/eyesofnetwork-release-{{eon_version}}-{{eon_release}}.noarch.rpm
   - https://labs.consol.de/repo/stable/rhel7/i386/labs-consol-stable.rhel7.noarch.rpm
   - https://rpm.ocsinventory-ng.org/ocsinventory-release-latest.el7.ocs.noarch.rpm
+  
+mod_gearman_packages:
+  - epel-release
+  - https://download.eyesofnetwork.com/repos/{{eon_version}}.{{eon_release}}/base/eyesofnetwork-release-{{eon_version}}-{{eon_release}}.noarch.rpm
+  - https://labs.consol.de/repo/stable/rhel7/i386/labs-consol-stable.rhel7.noarch.rpm  
 
 eon_user: admin
 eon_password: admin
