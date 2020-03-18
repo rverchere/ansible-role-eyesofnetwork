@@ -8,12 +8,8 @@
 
 - name: install the 'mod_gearman_worker' repos
   yum:
-    name: "{{ item }}"
+    name: "{{ mod_gearman_packages }}"
     state: latest
-  loop:
-    - epel-release
-    - https://download.eyesofnetwork.com/repos/{{eon_version}}/base/eyesofnetwork-release-{{eon_version}}-{{eon_release}}.noarch.rpm
-    - https://labs.consol.de/repo/stable/rhel7/i386/labs-consol-stable.rhel7.noarch.rpm
   when: "'mod_gearman_worker' in group_names"
 
 - name: install the 'mod_gearman_worker' packages
