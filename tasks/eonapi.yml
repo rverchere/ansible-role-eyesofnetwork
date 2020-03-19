@@ -24,6 +24,7 @@
   register: validate
   ignore_errors: yes
   when: request_key is succeeded
+  retries: 30
   delay: 5
 
 
