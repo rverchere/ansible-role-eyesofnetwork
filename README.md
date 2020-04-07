@@ -11,7 +11,7 @@ Role Variables
 --------------
 
 * `version` - EyesOfNetwork version (default 5)
-* `release` - EyesOfNetwork release (deafult 2)
+* `release` - EyesOfNetwork release (deafault 3)
 
 Example Playbook
 ----------------
