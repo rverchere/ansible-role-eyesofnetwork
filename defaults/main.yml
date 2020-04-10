@@ -4,16 +4,21 @@
 # --- eyesofnetwork
 
 eon_version: 5
-eon_release: 2
-eon_surname: Laura
+eon_release: 3
+eon_surname: Zelie
 
 eon_timezone: "Europe/Paris"
 
 eon_packages:
   - epel-release
-  - https://download.eyesofnetwork.com/repos/{{eon_version}}/base/eyesofnetwork-release-{{eon_version}}-{{eon_release}}.noarch.rpm
+  - https://download.eyesofnetwork.com/repos/{{eon_version}}.{{eon_release}}/base/eyesofnetwork-release-{{eon_version}}-{{eon_release}}.noarch.rpm
   - https://labs.consol.de/repo/stable/rhel7/i386/labs-consol-stable.rhel7.noarch.rpm
   - https://rpm.ocsinventory-ng.org/ocsinventory-release-latest.el7.ocs.noarch.rpm
+  
+mod_gearman_packages:
+  - epel-release
+  - https://download.eyesofnetwork.com/repos/{{eon_version}}.{{eon_release}}/base/eyesofnetwork-release-{{eon_version}}-{{eon_release}}.noarch.rpm
+  - https://labs.consol.de/repo/stable/rhel7/i386/labs-consol-stable.rhel7.noarch.rpm  
 
 eon_user: admin
 eon_password: admin
@@ -79,34 +84,16 @@ eon_sudoers:
 
 # --- grafana
 
-grafana_config: /etc/grafana/grafana.ini
-grafana_dir: /usr/share/grafana/public/dashboards/
 grafana_repo: https://packages.grafana.com/oss/rpm
 grafana_repo_key: https://packages.grafana.com/gpg.key
-grafana_version: latest
-grafana_package: "grafana{{ (grafana_version != 'latest') | ternary('-' ~ grafana_version, '') }}"
-grafana_firewalld: true
-grafana_url: "http://127.0.0.1:3000"
-grafana_admin_user: admin
-grafana_admin_pass: admin
 
-# --- histou
 
-histou_dir: /srv/eyesofnetwork/histou
-histou_git: https://github.com/Griesbacher/histou.git
-histou_git_dir: /tmp/histou-git
-histou_thruk_template: /usr/share/thruk/themes/themes-available/EyesOfNetwork/templates
 
 # --- influxdb
 
-influxdb_config: /etc/influxdb/influxdb.conf
 influxdb_repo: https://repos.influxdata.com/centos/$releasever/$basearch/stable/
 influxdb_repo_key: https://repos.influxdata.com/influxdb.key
-influxdb_packages:
-  - influxdb
-  - which
-influxdb_url: http://localhost:8086
-influxdb_backup_dir: /var/archives/influxdb/
+
 
 # --- linotp
 
@@ -129,19 +116,4 @@ mod_gearman_key: should_be_changed
 mod_gearman_key_path: /etc/mod_gearman/secret
 mod_gearman_hostgroups_queues: name1
 
-# --- nagflux
 
-nagflux_packages:
-  - git
-  - golang
-  - MySQL-python
-  - perl-Cpanel-JSON-XS
-  - perl-XML-LibXML
-nagflux_gopath: /tmp/gorepo
-nagflux_path: /srv/eyesofnetwork/nagflux
-nagflux_git: github.com/griesbacher/nagflux
-nagflux_log: /var/log/nagios
-nagflux_mysql_user: root
-nagflux_mysql_pass: root66
-nagflux_perfdata: "{{nagflux_log}}/spool/nagfluxperfdata"
-nagflux_spool: /var/spool/nagflux

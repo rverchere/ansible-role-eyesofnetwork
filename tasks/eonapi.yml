@@ -24,6 +24,9 @@
   register: validate
   ignore_errors: yes
   when: request_key is succeeded
+  retries: 30
+  delay: 5
+
 
 - name: eonapi - set eon_api_token variable
   set_fact:

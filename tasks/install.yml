@@ -10,6 +10,38 @@
     name: "{{ eon_packages }}"
     state: latest
 
+- name: grafana - add repository
+  yum_repository:
+    name: grafana
+    description: grafana
+    baseurl: "{{ grafana_repo }}"
+    gpgcheck: yes
+    gpgkey: "{{ grafana_repo_key }}"
+  when:
+    - eon_version == 5
+    - eon_release == 3
+
+- name: influxdb - add repository
+  yum_repository:
+    name: influxdb
+    description: influxdb
+    baseurl: "{{ influxdb_repo }}"
+    gpgcheck: yes
+    gpgkey: "{{ influxdb_repo_key }}"
+  when:
+    - eon_version == 5
+    - eon_release == 3
+
+
+- name: influxdb - import rpm key
+  rpm_key:
+    key: "{{ influxdb_repo_key }}"
+    state: present
+  when:
+    - eon_version == 5
+    - eon_release == 3
+
+
 - name: install the latest 'eyesofnetwork-release' package
   yum:
     name: "eyesofnetwork-release"
