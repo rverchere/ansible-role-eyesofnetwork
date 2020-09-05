@@ -10,9 +10,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          path: roles/eyesofnetwork
 
       - name: ansible-lint
         uses: ansible/ansible-lint-action@v4.1.0
         with:
-          targets: "tasks/install.yml"
+          targets: "eyesofnetwork"
         
